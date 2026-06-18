@@ -39,3 +39,9 @@ class RecipeUpdate(BaseModel):
     instructions: str | None = Field(None, min_length=1, max_length=500, description="Инструкция рецепта")
     category: str | None = Field(None, min_length=1, max_length=50, description="Категория рецепта")
     cooking_time: int | None = Field(None, ge=1, description="Время приготовления рецепта в минутах")
+
+class PlanDay(BaseModel):
+    day_of_week: int = Field(..., ge=0, le=6, description="День недели")
+    breakfast_recipe_id: int | None = Field(None, description="id завтрака")
+    lunch_recipe_id: int | None = Field(None, description="id обеда")
+    dinner_recipe_id: int | None = Field(None, description="id ужина")
