@@ -31,3 +31,11 @@ class RecipeCreate(BaseModel):
 class RecipeResponse(RecipeCreate):
     id: int = Field(..., description="id рецепта")
     user_id: int = Field(..., description="id пользователя рецепта")
+
+class RecipeUpdate(BaseModel):
+    title: str | None = Field(None, min_length=1, max_length=100, description="Название рецепта")
+    description: str | None = Field(None, min_length=1, max_length=300, description="Описание рецепта")
+    ingredients: list[str] | None = Field(None, min_length=1, description="Ингридиенты рецепта")
+    instructions: str | None = Field(None, min_length=1, max_length=500, description="Инструкция рецепта")
+    category: str | None = Field(None, min_length=1, max_length=50, description="Категория рецепта")
+    cooking_time: int | None = Field(None, ge=1, description="Время приготовления рецепта в минутах")
