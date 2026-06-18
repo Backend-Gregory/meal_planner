@@ -11,10 +11,10 @@ class UserLogin(BaseModel):
     password: str = Field(..., min_length=8, max_length=255, description="Пароль пользователя")
 
 class UserResponse(BaseModel):
-    id: int
-    name: str
-    email: EmailStr
-    created_at: datetime
+    id: int = Field(..., description="id пользователя")
+    name: str = Field(..., description="Имя пользователя")
+    email: EmailStr = Field(..., description="Почта пользователя")
+    created_at: datetime = Field(..., description="Дата создания пользователя")
 
 class UserUpdate(BaseModel):
     name: str | None = Field(None, min_length=1, max_length=100, description="Имя пользователя")
