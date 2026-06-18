@@ -15,3 +15,7 @@ class UserResponse(BaseModel):
     name: str
     email: EmailStr
     created_at: datetime
+
+class UserUpdate(BaseModel):
+    name: str | None = Field(None, min_length=1, max_length=100, description="Имя пользователя")
+    email: EmailStr | None = Field(None, max_length=100, description="Почта пользователя")
