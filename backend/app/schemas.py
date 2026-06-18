@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, EmailStr
-from datetime import datetime
+from datetime import datetime, date
 
 class UserCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=100, description="Имя пользователя")
@@ -45,3 +45,7 @@ class PlanDay(BaseModel):
     breakfast_recipe_id: int | None = Field(None, description="id завтрака")
     lunch_recipe_id: int | None = Field(None, description="id обеда")
     dinner_recipe_id: int | None = Field(None, description="id ужина")
+
+class PlanCreate(BaseModel):
+    week_start: date = Field(..., description="Старт недели")
+    days: list[PlanDay] = Field(..., min_length=7, max_length=7, description="Список из 7 дней недели (пн–вс)")
