@@ -61,3 +61,7 @@ class PlanResponse(BaseModel):
 class ShoppingItemCreate(BaseModel):
     ingredient: str = Field(..., min_length=1, max_length=100, description="Ингредиент")
     quantity: str = Field(..., min_length=1, max_length=50, description="Кол-во ингредиентов")
+
+class ShoppingItemResponse(ShoppingItemCreate):
+    id: int = Field(..., description="id записи в системе покупок")
+    purchased: bool = Field(..., description="Статус покупки")
