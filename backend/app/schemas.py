@@ -65,3 +65,6 @@ class ShoppingItemCreate(BaseModel):
 class ShoppingItemResponse(ShoppingItemCreate):
     id: int = Field(..., description="id записи в системе покупок")
     purchased: bool = Field(..., description="Статус покупки")
+
+class ShoppingItemUpdate(BaseModel):
+    purchased: bool
