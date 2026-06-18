@@ -23,7 +23,7 @@ class UserUpdate(BaseModel):
 class RecipeCreate(BaseModel):
     title: str = Field(..., min_length=1, max_length=100, description="Название рецепта")
     description: str | None = Field(None, min_length=1, max_length=300, description="Описание рецепта")
-    ingredients: list[str] = Field(..., min_length=1, description="Ингридиенты рецепта")
+    ingredients: list[str] = Field(..., min_length=1, description="Ингредиенты рецепта")
     instructions: str = Field(..., min_length=1, max_length=500, description="Инструкция рецепта")
     category: str = Field(..., min_length=1, max_length=50, description="Категория рецепта")
     cooking_time: int = Field(..., ge=1, description="Время приготовления рецепта в минутах")
@@ -35,7 +35,7 @@ class RecipeResponse(RecipeCreate):
 class RecipeUpdate(BaseModel):
     title: str | None = Field(None, min_length=1, max_length=100, description="Название рецепта")
     description: str | None = Field(None, min_length=1, max_length=300, description="Описание рецепта")
-    ingredients: list[str] | None = Field(None, min_length=1, description="Ингридиенты рецепта")
+    ingredients: list[str] | None = Field(None, min_length=1, description="Ингредиенты рецепта")
     instructions: str | None = Field(None, min_length=1, max_length=500, description="Инструкция рецепта")
     category: str | None = Field(None, min_length=1, max_length=50, description="Категория рецепта")
     cooking_time: int | None = Field(None, ge=1, description="Время приготовления рецепта в минутах")
@@ -57,3 +57,7 @@ class PlanResponse(BaseModel):
     day_of_week: int = Field(..., description="День недели")
     recipe_id: int = Field(..., description="id рецепта")
     meal_type: str = Field(..., description="Тип приема пищи")
+
+class ShoppingItemCreate(BaseModel):
+    ingredient: str = Field(..., min_length=1, max_length=100, description="Ингредиент")
+    quantity: str = Field(..., min_length=1, max_length=50, description="Кол-во ингредиентов")
