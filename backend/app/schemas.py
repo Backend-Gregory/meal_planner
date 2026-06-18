@@ -27,3 +27,7 @@ class RecipeCreate(BaseModel):
     instructions: str = Field(..., min_length=1, max_length=500, description="Инструкция рецепта")
     category: str = Field(..., min_length=1, max_length=50, description="Категория рецепта")
     cooking_time: int = Field(..., ge=1, description="Время приготовления рецепта в минутах")
+
+class RecipeResponse(RecipeCreate):
+    id: int = Field(..., description="id рецепта")
+    user_id: int = Field(..., description="id пользователя рецепта")
