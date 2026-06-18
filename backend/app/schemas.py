@@ -49,3 +49,11 @@ class PlanDay(BaseModel):
 class PlanCreate(BaseModel):
     week_start: date = Field(..., description="Старт недели")
     days: list[PlanDay] = Field(..., min_length=7, max_length=7, description="Список из 7 дней недели (пн–вс)")
+
+class PlanResponse(BaseModel):
+    id: int = Field(..., description="id плана")
+    user_id: int = Field(..., description="id пользователя плана")
+    week_start: date = Field(..., description="Старт недели")
+    day_of_week: int = Field(..., description="День недели")
+    recipe_id: int = Field(..., description="id рецепта")
+    meal_type: str = Field(..., description="Тип приема пищи")
