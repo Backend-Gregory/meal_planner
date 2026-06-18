@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import String, ForeignKey, JSON, Integer, DateTime, Date
+from sqlalchemy import String, ForeignKey, JSON, Integer, DateTime, Date, Boolean
 from app.database import Base
 from datetime import datetime, date
 
@@ -12,11 +12,12 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
     recipes: Mapped[list["Recipe"]] = relationship(back_populates="user")
     plans: Mapped[list["Plan"]] = relationship(back_populates="user")
+    shopping_items: Mapped[list["ShoppingList"]] = relationship(back_populates="user")
 
 class Recipe(Base):
     __tablename__ = "recipes"
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     title: Mapped[str] = mapped_column(String(100), nullable=False)
     description: Mapped[str] = mapped_column(String(300), nullable=False)
     ingredients: Mapped[list[str]] = mapped_column(JSON, nullable=False)
@@ -29,10 +30,20 @@ class Recipe(Base):
 class Plan(Base):
     __tablename__ = "plans"
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     week_start: Mapped[date] = mapped_column(Date, nullable=False)
     day_of_week: Mapped[int] = mapped_column(Integer, nullable=False)
-    recipe_id: Mapped[int] = mapped_column(ForeignKey("recipes.id"))
+    recipe_id: Mapped[int] = mapped_column(ForeignKey("recipes.id"), nullable=False)
     meal_type: Mapped[str] = mapped_column(String(20), nullable=False)
     user: Mapped["User"] = relationship(back_populates="plans")
     recipe: Mapped["Recipe"] = relationship(back_populates="plans")
+
+class ShoppingList(Base):
+    __tablename__ = "shopping_lists"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    week_start: Mapped[date] = mapped_column(Date, nullable=False)
+    ingredient: Mapped[str] = mapped_column(String(100), nullable=False)
+    quantity: Mapped[str] = mapped_column(String(50), nullable=False)
+    purchased: Mapped[bool] = mapped_column(Boolean, default=False)
+    user: Mapped[User] = relationship(back_populates="shopping_items")
