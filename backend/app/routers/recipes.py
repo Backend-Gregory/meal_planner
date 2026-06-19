@@ -24,7 +24,7 @@ async def create_recipe(
     session.add(new_recipe)
     await session.commit()
     await session.refresh(new_recipe)
-    return new_recipe
+    return RecipeResponse.model_validate(new_recipe)
 
 @router.get('/', response_model=list[RecipeResponse])
 async def get_recipes(
@@ -46,4 +46,4 @@ async def get_recipes(
     res = await session.execute(query)
     recipes = res.scalars().all()
 
-    return recipes
+    return [RecipeResponse.model_validate(recipe) for recipe in recipes]
