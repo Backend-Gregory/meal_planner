@@ -27,6 +27,10 @@ class Recipe(Base):
     user: Mapped["User"] = relationship(back_populates="recipes")
     plans: Mapped[list["Plan"]] = relationship(back_populates="recipe")
 
+    @property
+    def user_name(self) -> str:
+        return self.user.name if self.user else "Unknown"
+
 class Plan(Base):
     __tablename__ = "plans"
     id: Mapped[int] = mapped_column(primary_key=True)
