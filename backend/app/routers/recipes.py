@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 from sqlalchemy import select
 from app.database import get_session
 from models import Recipe, User
@@ -24,3 +25,25 @@ async def create_recipe(
     await session.commit()
     await session.refresh(new_recipe)
     return new_recipe
+
+@router.get('/', response_model=list[RecipeResponse])
+async def get_recipes(
+    skip: int = 0,
+    limit: int = 10,
+    category: str | None = None,
+    search: str | None = None,
+    session: AsyncSession = Depends(get_session)
+):
+    query = select(Recipe).options(selectinload(Recipe.user))
+
+    if category:
+        query = query.where(Recipe.category == category)
+    if search:
+        query = query.where(Recipe.title.ilike(f"%{search}%"))
+
+    query = query.offset(skip).limit(limit)
+
+    res = await session.execute(query)
+    recipes = res.scalars().all()
+
+    return recipes
