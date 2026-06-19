@@ -39,6 +39,7 @@ class RecipeCreate(BaseModel):
 class RecipeResponse(RecipeCreate):
     id: int = Field(..., description="id рецепта")
     user_id: int = Field(..., description="id пользователя рецепта")
+    user_name: str = Field(..., description="Имя пользователя рецепта")
 
 class RecipeUpdate(BaseModel):
     title: str | None = Field(None, min_length=1, max_length=100, description="Название рецепта")
