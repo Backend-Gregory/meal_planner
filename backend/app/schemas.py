@@ -24,6 +24,10 @@ class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
 
+class ChangePassword(BaseModel):
+    old_password: str = Field(..., min_length=8, max_length=255, description="Старый пароль")
+    new_password: str = Field(..., min_length=8, max_length=255, description="Новый пароль")
+
 class RecipeCreate(BaseModel):
     title: str = Field(..., min_length=1, max_length=100, description="Название рецепта")
     description: str | None = Field(None, min_length=1, max_length=300, description="Описание рецепта")
