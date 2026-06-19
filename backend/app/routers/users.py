@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.database import get_session
 from app.models import User
-from app.schemas import UserCreate, UserLogin, UserResponse
+from app.schemas import UserCreate, UserLogin, UserResponse, Token
 from app.auth import hash_password, verify_password, create_access_token
 from app.dependencies import get_current_user
 
@@ -23,3 +23,21 @@ async def register(user: UserCreate, session: AsyncSession = Depends(get_session
     await session.commit()
     await session.refresh(new_user)
     return new_user
+
+@router.post('/login', response_model=Token)
+async def login(user: UserLogin, session: AsyncSession = Depends(get_session)):
+    res = await session.execute(select(User).where(User.email == user.email))
+    db_user = res.scalar_one_or_none()
+
+    if not db_user:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    is_password = verify_password(user.password, db_user.hashed_password)
+
+    if not is_password:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    user_id = db_user.id
+    access_token = create_access_token(user_id)
+
+    return {"access_token": access_token, "token_type": "bearer"}
