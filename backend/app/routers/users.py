@@ -22,7 +22,7 @@ async def register(user: UserCreate, session: AsyncSession = Depends(get_session
     session.add(new_user)
     await session.commit()
     await session.refresh(new_user)
-    return new_user
+    return UserResponse.model_validate(new_user)
 
 @router.post('/login', response_model=Token)
 async def login(user: UserLogin, session: AsyncSession = Depends(get_session)):
@@ -44,7 +44,7 @@ async def login(user: UserLogin, session: AsyncSession = Depends(get_session)):
 
 @router.get('/me', response_model=UserResponse)
 async def get_me(current_user: User = Depends(get_current_user)):
-    return current_user
+    return UserResponse.model_validate(current_user)
 
 @router.put('/change-password', response_model=dict)
 async def change_password(
