@@ -20,6 +20,10 @@ class UserUpdate(BaseModel):
     name: str | None = Field(None, min_length=1, max_length=100, description="Имя пользователя")
     email: EmailStr | None = Field(None, max_length=100, description="Почта пользователя")
 
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+
 class RecipeCreate(BaseModel):
     title: str = Field(..., min_length=1, max_length=100, description="Название рецепта")
     description: str | None = Field(None, min_length=1, max_length=300, description="Описание рецепта")
