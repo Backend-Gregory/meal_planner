@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.database import get_session
 from app.models import User
-from app.schemas import UserCreate, UserLogin, UserResponse, Token
+from app.schemas import UserCreate, UserLogin, UserResponse, Token, ChangePassword
 from app.auth import hash_password, verify_password, create_access_token
 from app.dependencies import get_current_user
 
@@ -45,3 +45,21 @@ async def login(user: UserLogin, session: AsyncSession = Depends(get_session)):
 @router.get('/me', response_model=UserResponse)
 async def get_me(current_user: User = Depends(get_current_user)):
     return current_user
+
+@router.put('/change-password', response_model=dict)
+async def change_password(
+    data: ChangePassword,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    is_old_password = verify_password(data.old_password, current_user.hashed_password)
+
+    if not is_old_password:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    new_hashed = hash_password(data.new_password)
+
+    current_user.hashed_password = new_hashed
+    await session.commit()
+
+    return {"message": "Password changed successfully"}
