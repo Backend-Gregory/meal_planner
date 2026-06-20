@@ -90,3 +90,26 @@ async def update_recipe(
 
     await session.commit()
     return RecipeResponse.model_validate(recipe)
+
+@router.delete('/{recipe_id}', status_code=204)
+async def delete_recipe(
+    recipe_id: int,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    res = await session.execute(
+        select(Recipe)
+        .where(Recipe.id == recipe_id)
+    )
+    recipe = res.scalar_one_or_none()
+
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+    
+    is_author = current_user.id == recipe.user_id
+
+    if not is_author:
+        raise HTTPException(status_code=403, detail="You are not the author of this recipe")
+    
+    await session.delete(recipe)
+    await session.commit()
