@@ -4,7 +4,7 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy import select
 from app.database import get_session
 from models import Recipe, User
-from schemas import RecipeCreate, RecipeResponse
+from schemas import RecipeCreate, RecipeResponse, RecipeUpdate
 from app.dependencies import get_current_user
 
 router = APIRouter(prefix="/recipes", tags=["recipes"])
@@ -60,4 +60,33 @@ async def get_recipe(recipe_id: int, session: AsyncSession = Depends(get_session
     if not recipe:
         raise HTTPException(status_code=404, detail="Recipe not found")
     
+    return RecipeResponse.model_validate(recipe)
+
+@router.put('/{recipe_id}', response_model=RecipeResponse)
+async def update_recipe(
+    recipe_id: int,
+    recipe_data: RecipeUpdate,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    res = await session.execute(
+        select(Recipe)
+        .where(Recipe.id == recipe_id)
+        .options(selectinload(Recipe.user))
+    )
+    recipe = res.scalar_one_or_none()
+
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+    
+    is_author = current_user.id == recipe.user_id
+
+    if not is_author:
+        raise HTTPException(status_code=403, detail="You are not the author of this recipe")
+    
+    update_data = recipe_data.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(recipe, key, value)
+
+    await session.commit()
     return RecipeResponse.model_validate(recipe)
