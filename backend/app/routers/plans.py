@@ -80,3 +80,41 @@ async def get_plan_by_week(
     plans = res.scalars().all()
 
     return [PlanResponse.model_validate(plan) for plan in plans]
+
+@router.post('/copy', response_model=list[PlanResponse])
+async def copy_plan(
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    today = datetime.now().date()
+    week_start = today - timedelta(days=today.weekday())
+
+    res = await session.execute(
+        select(Plan)
+        .where(Plan.user_id == current_user.id)
+        .where(Plan.week_start == week_start)
+        .options(selectinload(Plan.recipe))
+    )
+    plans = res.scalars().all()
+
+    if not plans:
+        raise HTTPException(status_code=404, detail="Plans not found")
+    
+    new_plans = []
+    for plan in plans:
+        new_plan = Plan(
+            user_id = current_user.id,
+            week_start = week_start + timedelta(days=7),
+            day_of_week = plan.day_of_week,
+            recipe_id = plan.recipe_id,
+            meal_type = plan.meal_type
+        )
+        new_plans.append(new_plan)
+
+    session.add_all(new_plans)
+    await session.commit()
+
+    for plan in new_plans:
+        await session.refresh(plan)
+
+    return [PlanResponse.model_validate(plan) for plan in new_plans]
