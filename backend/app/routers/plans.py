@@ -6,7 +6,7 @@ from app.database import get_session
 from models import Plan, User
 from schemas import PlanDay, PlanCreate, PlanResponse
 from app.dependencies import get_current_user
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 router = APIRouter(prefix="/plans", tags=["plans"])
 
@@ -52,6 +52,24 @@ async def get_current_plan(
 ):
     today = datetime.now().date()
     week_start = today - timedelta(days=today.weekday())
+
+    res = await session.execute(
+        select(Plan)
+        .where(Plan.user_id == current_user.id)
+        .where(Plan.week_start == week_start)
+        .options(selectinload(Plan.recipe))
+    )
+    plans = res.scalars().all()
+
+    return [PlanResponse.model_validate(plan) for plan in plans]
+
+@router.get('/{week_start}', response_model=list[PlanResponse])
+async def get_plan_by_week(
+    week_start: date,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    week_start = week_start - timedelta(days=week_start.weekday())
 
     res = await session.execute(
         select(Plan)
