@@ -6,6 +6,7 @@ from app.database import get_session
 from models import Plan, User
 from schemas import PlanDay, PlanCreate, PlanResponse
 from app.dependencies import get_current_user
+from datetime import timedelta
 
 router = APIRouter(prefix="/plans", tags=["plans"])
 
@@ -15,9 +16,12 @@ async def create_plan(
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session)
 ):
+
     if len(plan_data.days) != 7:
         raise HTTPException(status_code=400, detail="Must have exactly 7 days")
     
+    week_start = plan_data.week_start - timedelta(days=plan_data.week_start.weekday())
+
     new_plans = []
     meal_types = ["breakfast", "lunch", "dinner"]
     for day in plan_data.days:
@@ -26,7 +30,7 @@ async def create_plan(
             if recipe_id:
                 plan = Plan(
                     user_id = current_user.id,
-                    week_start = plan_data.week_start,
+                    week_start = week_start,
                     day_of_week = day.day_of_week,
                     recipe_id = recipe_id,
                     meal_type = meal_type
