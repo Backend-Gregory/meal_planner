@@ -118,3 +118,21 @@ async def copy_plan(
         await session.refresh(plan)
 
     return [PlanResponse.model_validate(plan) for plan in new_plans]
+
+@router.delete('/{plan_id}', status_code=204)
+async def delete_plan(
+    plan_id: int,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    res = await session.execute(select(Plan).where(Plan.id == plan_id))
+    plan = res.scalar_one_or_none()
+
+    if not plan:
+        raise HTTPException(status_code=404, detail="Plan not found")
+    
+    if current_user.id != plan.user_id:
+        raise HTTPException(status_code=403, detail="You are not the author of this plan")
+    
+    session.delete(plan)
+    await session.commit()
