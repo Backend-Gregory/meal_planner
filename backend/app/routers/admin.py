@@ -43,3 +43,26 @@ async def block_user(
     await session.commit()
     await session.refresh(user)
     return UserResponse.model_validate(user)
+
+@router.patch('/users/{user_id}/unblock', response_model=UserResponse)
+async def unblock_user(
+    user_id: int,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    if not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    res = await session.execute(
+        select(User)
+        .where(User.id == user_id)
+    )
+    user = res.scalar_one_or_none()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    user.is_active = True
+    await session.commit()
+    await session.refresh(user)
+    return UserResponse.model_validate(user)
