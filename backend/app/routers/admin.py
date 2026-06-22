@@ -1,9 +1,10 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 from sqlalchemy import select
 from app.database import get_session
-from models import User
-from schemas import UserResponse
+from models import User, Recipe
+from schemas import UserResponse, RecipeResponse
 from app.dependencies import get_current_user
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -66,3 +67,19 @@ async def unblock_user(
     await session.commit()
     await session.refresh(user)
     return UserResponse.model_validate(user)
+
+@router.get('/recipes', response_model=list[RecipeResponse])
+async def get_recipes(
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    if not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    res = await session.execute(
+        select(Recipe)
+        .options(selectinload(Recipe.user))
+    )
+    recipes = res.scalars().all()
+
+    return [RecipeResponse.model_validate(recipe) for recipe in recipes]
