@@ -25,3 +25,27 @@ async def get_shopping_list(
     shopping_list = res.scalars().all()
 
     return [ShoppingItemResponse.model_validate(item) for item in shopping_list]
+
+@router.patch('/{item_id}', response_model=ShoppingItemResponse)
+async def update_shopping_item(
+    item_id: int,
+    item_data: ShoppingItemUpdate,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    res = await session.execute(
+        select(ShoppingList)
+        .where(ShoppingList.id == item_id)
+    )
+    item = res.scalar_one_or_none()
+
+    if not item:
+        raise HTTPException(status_code=404, detail="item not found")
+    
+    if current_user.id != item.user_id:
+        raise HTTPException(status_code=403, detail="You are not the owner of this shopping item")
+    
+    item.purchased = item_data.purchased
+    await session.commit()
+    await session.refresh(item)
+    return ShoppingItemResponse.model_validate(item)
