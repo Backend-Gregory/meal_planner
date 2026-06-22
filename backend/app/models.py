@@ -11,6 +11,7 @@ class User(Base):
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     recipes: Mapped[list["Recipe"]] = relationship(back_populates="user")
     plans: Mapped[list["Plan"]] = relationship(back_populates="user")
     shopping_items: Mapped[list["ShoppingList"]] = relationship(back_populates="user")
