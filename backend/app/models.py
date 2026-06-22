@@ -10,6 +10,7 @@ class User(Base):
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+    is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
     recipes: Mapped[list["Recipe"]] = relationship(back_populates="user")
     plans: Mapped[list["Plan"]] = relationship(back_populates="user")
     shopping_items: Mapped[list["ShoppingList"]] = relationship(back_populates="user")
