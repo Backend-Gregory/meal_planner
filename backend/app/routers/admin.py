@@ -83,3 +83,24 @@ async def get_recipes(
     recipes = res.scalars().all()
 
     return [RecipeResponse.model_validate(recipe) for recipe in recipes]
+
+@router.delete('/recipes/{recipe_id}', status_code=204)
+async def delete_recipe(
+    recipe_id: int,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    if not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    res = await session.execute(
+        select(Recipe)
+        .where(Recipe.id == recipe_id)
+    )
+    recipe = res.scalar_one_or_none()
+
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+    
+    await session.delete(recipe)
+    await session.commit()
