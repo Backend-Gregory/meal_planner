@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from sqlalchemy import select
 from app.database import get_session
-from models import Plan, User
+from models import Plan, User, Recipe
 from schemas import PlanDay, PlanCreate, PlanResponse
 from app.dependencies import get_current_user
 from datetime import datetime, timedelta, date
@@ -28,6 +28,9 @@ async def create_plan(
         for meal_type in meal_types:
             recipe_id = getattr(day, f"{meal_type}_recipe_id")
             if recipe_id:
+                recipe = await session.get(Recipe, recipe_id)
+                if not recipe:
+                    raise HTTPException(status_code=404, detail=f"Recipe {recipe_id} not found")
                 plan = Plan(
                     user_id = current_user.id,
                     week_start = week_start,
