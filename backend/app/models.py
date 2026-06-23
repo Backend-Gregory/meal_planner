@@ -16,6 +16,9 @@ class User(Base):
     plans: Mapped[list["Plan"]] = relationship(back_populates="user")
     shopping_items: Mapped[list["ShoppingList"]] = relationship(back_populates="user")
 
+    def __repr__(self):
+        return f"<User(id={self.id}, email={self.email})>"
+
 class Recipe(Base):
     __tablename__ = "recipes"
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -32,6 +35,9 @@ class Recipe(Base):
     @property
     def user_name(self) -> str:
         return self.user.name if self.user else "Unknown"
+    
+    def __repr__(self):
+        return f"<Recipe(id={self.id}, title={self.title})>"
 
 class Plan(Base):
     __tablename__ = "plans"
@@ -44,6 +50,9 @@ class Plan(Base):
     user: Mapped["User"] = relationship(back_populates="plans")
     recipe: Mapped["Recipe"] = relationship(back_populates="plans")
 
+    def __repr__(self):
+        return f"<Plan(id={self.id}, user_id={self.user_id}, recipe_id={self.recipe_id}, meal_type={self.meal_type})>"
+
 class ShoppingList(Base):
     __tablename__ = "shopping_lists"
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -53,3 +62,6 @@ class ShoppingList(Base):
     quantity: Mapped[str] = mapped_column(String(50), nullable=False)
     purchased: Mapped[bool] = mapped_column(Boolean, default=False)
     user: Mapped[User] = relationship(back_populates="shopping_items")
+
+    def __repr__(self):
+        return f"<ShoppingList(id={self.id}, ingredient={self.ingredient})>"
