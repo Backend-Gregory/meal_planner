@@ -60,6 +60,14 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         content={"detail": exc.errors()}
     )
 
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.error(f"Unhandled error: {exc}")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal server error"}
+    )
+
 @app.get("/")
 async def root():
     return {"message": "Meal Planner API is running", "docs": "/docs"}
