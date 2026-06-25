@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Создание рецепта">
+        <meta name="keywords" content="Planner food, Meal_Planner, создать рецепт">
+        <title>Создать рецепт — Meal Planner</title>
+    </head>
+    <body>
+        <header>
+            <div>
+                <a href="index.html">Meal Planner</a>
+                <div>
+                    <a href="recipes.html">Рецепты</a>
+                    <a href="plans.html">Планы</a>
+                    <a href="shopping.html">Список покупок</a>
+                    <button>Выйти</button>
+                </div>
+            </div>
+        </header>
+        <main>
+            <section>
+                <h1>Создать рецепт</h1>
+                <form>
+                    <div>
+                        <label for="recipe_title">Название</label>
+                        <input id="recipe_title" type="text" name="recipe-title" placeholder="Введите название">
+                    </div>
+                    <div>
+                        <label for="recipe_description">Описание (необязательно)</label>
+                        <textarea id="recipe_description" name="recipe_description" placeholder="Введите описание"></textarea>
+                    </div>
+                    <div>
+                        <label for="recipe_ingredients">Ингредиенты (каждый с новой строки)</label>
+                        <textarea name="recipe_ingredients" id="recipe_ingredients" placeholder="Введите ингредиенты"></textarea>
+                    </div>
+                    <div>
+                        <label for="recipe_instructions">Инструкция по приготовлению</label>
+                        <textarea name="recipe_instructions" id="recipe_instructions" placeholder="Введите инструкцию"></textarea>
+                    </div>
+                    <div>
+                        <label for="recipe_category">Категория</label>
+                        <select name="recipe_category" id="recipe_category">
+                            <option value="breakfast">Завтрак</option>
+                            <option value="lunch">Обед</option>
+                            <option value="dinner">Ужин</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="recipe_cooking_time">Время приготовления (мин)</label>
+                        <input id="recipe_cooking_time" type="number" name="recipe_cooking_time" placeholder="Введите время приготовления">
+                    </div>
+                    <div>
+                        <button type="submit">Сохранить</button>
+                        <a href="recipes.html">Отмена</a>
+                        <button type="reset">Очистить</button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </body>
+</html>
