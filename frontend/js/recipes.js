@@ -186,3 +186,29 @@ async function loadRecipeDetail(id) {
         alert('Ошибка загрузки рецепта')
     }
 }
+
+let currentRecipeId = null
+
+async function loadRecipeToEdit(id) {
+    try {
+        const recipe = await getRecipe(id)
+        if (!recipe) {
+            alert('Рецепт не найден')
+            window.location.href = 'recipes.html'
+            return
+        }
+
+        currentRecipeId = recipe.id
+
+        document.querySelector('#recipe_title').value = recipe.title
+        document.querySelector('#recipe_description').value = recipe.description || ''
+        document.querySelector('#recipe_ingredients').value = recipe.ingredients.join('\n')
+        document.querySelector('#recipe_instructions').value = recipe.instructions
+        document.querySelector('#recipe_category').value = recipe.category
+        document.querySelector('#recipe_cooking_time').value = recipe.cooking_time
+
+    } catch (error) {
+        console.error('Ошибка загрузки рецепта для редактирования:', error)
+        alert('Ошибка загрузки рецепта')
+    }
+}
