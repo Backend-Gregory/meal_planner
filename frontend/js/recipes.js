@@ -100,3 +100,21 @@ async function createRecipe() {
         alert('Ошибка создания рецепта')
     }
 }
+
+async function deleteRecipe(recipeId) {
+    if (!confirm('Вы уверены, что хотите удалить этот рецепт?')) return
+    
+    try {
+    const response = await apiRequest(`/recipes/${recipeId}`, 'DELETE')
+    if (response.ok) {
+        alert('Рецепт удален! 🎉')
+        loadRecipes()
+    } else {
+        const error = await response.json()
+        alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+    }
+    } catch (error) {
+        console.error('Ошибка удаления рецепта:', error)
+        alert('Ошибка удаления рецепта')
+    }
+}
