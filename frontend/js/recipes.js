@@ -126,3 +126,21 @@ async function deleteRecipe(recipeId) {
         alert('Ошибка удаления рецепта')
     }
 }
+
+async function getRecipe(id) {
+    try {
+        const response = await apiRequest(`/recipes/${id}`, 'GET')
+
+        if (response.ok) {
+            return await response.json()
+        } else {
+            const error = await response.json()
+            alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+            return null
+        }
+    } catch (error) {
+        console.error('Ошибка загрузки рецепта:', error)
+        alert('Ошибка загрузки рецепта')
+        return null
+    }
+}
