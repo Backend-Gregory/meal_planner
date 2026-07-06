@@ -40,8 +40,9 @@ function renderRecipes(recipes) {
                     <p class="card-text">${recipe.description}</p>
                     <p>Категория: ${recipe.category} | Время: ${recipe.cooking_time} мин</p>
                     <p>Автор: ${recipe.user_name}</p>
-                    <button class="btn btn-primary btn-sm">Редактировать</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteRecipe(${recipe.id})">Удалить</button>
+                    <button class="btn btn-info btn-sm" onclick="window.location.href='recipe-detail.html?id=${recipe.id}'">📖 Подробнее</button>
+                    <button class="btn btn-primary btn-sm" onclick="window.location.href='edit-recipe.html?id=${recipe.id}'">✏️ Редактировать</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteRecipe(${recipe.id})">🗑️ Удалить</button>
                 </div>
             </div>
         </div>
@@ -266,3 +267,30 @@ async function updateRecipeFromForm() {
         alert('Ошибка обновления рецепта')
     }
 }
+
+function initEditRecipePage() {
+    const params = new URLSearchParams(window.location.search)
+    const recipeId = params.get('id')
+    
+    if (recipeId) {
+        loadRecipeToEdit(recipeId)
+    } else {
+        alert('Рецепт не найден')
+        window.location.href = 'recipes.html'
+    }
+}
+
+function initRecipeDetailPage() {
+    const params = new URLSearchParams(window.location.search)
+    const recipeId = params.get('id')
+    if (recipeId) {
+        loadRecipeDetail(recipeId)
+    } else {
+        document.querySelector('#recipe-detail').innerHTML = `
+        <div class="text-center text-white">
+            <h1>Рецепт не найден</h1>
+        <a href="recipes.html" class="btn btn-accent mt-3">Вернуться к рецептам</a>
+        </div>
+        `
+    }
+}                
