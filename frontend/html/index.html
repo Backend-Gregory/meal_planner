@@ -13,6 +13,7 @@
     
     <!-- Свой CSS -->
     <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/index.js" defer></script>
 </head>
 <body class="bg-gradient-custom">
     <header>
@@ -23,9 +24,16 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
+                    <ul class="navbar-nav ms-auto" id="auth-buttons">
                         <li class="nav-item"><a class="nav-link" href="login.html">Войти</a></li>
                         <li class="nav-item"><a class="nav-link" href="register.html">Регистрация</a></li>
+                    </ul>
+                    <ul class="navbar-nav ms-auto" id="user-buttons" style="display: none;">
+                        <li class="nav-item"><a class="nav-link" href="recipes.html">Рецепты</a></li>
+                        <li class="nav-item"><a class="nav-link" href="plans.html">Планы</a></li>
+                        <li class="nav-item"><a class="nav-link" href="shopping.html">Список покупок</a></li>
+                        <li class="nav-item"><a class="nav-link" href="admin.html">Админ</a></li>
+                        <li class="nav-item"><button class="btn btn-outline-light btn-sm" onclick="logout()">Выйти</button></li>
                     </ul>
                 </div>
             </div>

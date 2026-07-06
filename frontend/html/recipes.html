@@ -6,6 +6,13 @@
         <meta name="description" content="Список рецептов">
         <meta name="keywords" content="Planner food, Meal_Planner, список, рецепты">
         <title>Рецепты — Meal Planner</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../css/style.css">
+        <script src="../js/api.js"></script>
+        <script src="../js/auth.js"></script>
+        <script>
+            checkAuth()
+        </script>
     </head>
     <body>
         <header>
@@ -15,7 +22,7 @@
                     <a href="recipes.html">Рецепты</a>
                     <a href="plans.html">Планы</a>
                     <a href="shopping.html">Список покупок</a>
-                    <button>Выйти</button>
+                    <button onclick="logout()">Выйти</button>
                 </div>
             </div>
         </header>
