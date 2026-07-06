@@ -212,3 +212,57 @@ async function loadRecipeToEdit(id) {
         alert('Ошибка загрузки рецепта')
     }
 }
+
+async function updateRecipeFromForm() {
+    try {
+        const title = document.querySelector('#recipe_title').value
+        const description = document.querySelector('#recipe_description').value
+        const ingredientsText = document.querySelector('#recipe_ingredients').value
+        const instructions = document.querySelector('#recipe_instructions').value
+        const category = document.querySelector('#recipe_category').value
+        const cooking_time = parseInt(document.querySelector('#recipe_cooking_time').value)
+
+        if (!title) {
+            alert('Введите название рецепта')
+            return
+        }
+        if (!ingredientsText) {
+            alert('Введите ингредиенты')
+            return
+        }
+        if (!instructions) {
+            alert('Введите инструкцию')
+            return
+        }
+        if (!cooking_time || cooking_time <= 0) {
+            alert('Введите корректное время приготовления')
+            return
+        }
+
+        const ingredients = ingredientsText
+            .split('\n')
+            .filter(item => item.trim() !== '')
+
+        const data = {
+            title: title,
+            description: description || '',
+            ingredients: ingredients,
+            instructions: instructions,
+            category: category,
+            cooking_time: cooking_time
+        }
+
+        const response = await apiRequest(`/recipes/${currentRecipeId}`, 'PUT', data)
+
+        if (response.ok) {
+            alert('Рецепт обновлён! 🎉')
+            window.location.href = 'recipes.html'
+        } else {
+            const error = await response.json()
+            alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+        }
+    } catch (error) {
+        console.error('Ошибка обновления рецепта:', error)
+        alert('Ошибка обновления рецепта')
+    }
+}
