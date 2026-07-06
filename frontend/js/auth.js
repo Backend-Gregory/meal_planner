@@ -54,3 +54,11 @@ async function logout() {
     alert('Вы вышли из системы.')
     window.location.href = '/login.html'
 }
+
+async function checkAuth() {
+    const token = localStorage.getItem('token')
+    if (!token) {
+        alert('Вы не авторизованы. Пожалуйста, войдите в систему.')
+        window.location.href = '/login.html'
+    }
+}
