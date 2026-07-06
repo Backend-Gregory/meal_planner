@@ -48,3 +48,9 @@ async function login() {
         alert('Ошибка при входе: ' + error.message)
     }
 }
+
+async function logout() {
+    localStorage.removeItem('token')
+    alert('Вы вышли из системы.')
+    window.location.href = '/login.html'
+}
