@@ -1,9 +1,8 @@
-const name = document.querySelector('#name').value
-const email = document.querySelector('#email').value
-const password = document.querySelector('#password').value
-
 async function register() {
     try {
+        const name = document.querySelector('#name').value
+        const email = document.querySelector('#email').value
+        const password = document.querySelector('#password').value
         if (!name) throw new Error('Введите имя')
         if (!email) throw new Error('Введите email')
         if (!password) throw new Error('Введите пароль')
@@ -22,5 +21,30 @@ async function register() {
     } catch (error) {
         console.error('Ошибка при регистрации:', error)
         alert('Ошибка при регистрации: ' + error.message)
+    }
+}
+
+async function login() {
+    try {
+        const email = document.querySelector('#email').value
+        const password = document.querySelector('#password').value
+        if (!email) throw new Error('Введите email')
+        if (!password) throw new Error('Введите пароль')
+        const response = await apiRequest('/auth/login', 'POST', {
+            email: email,
+            password: password
+        })
+        if (response.ok) {
+            const data = await response.json()
+            localStorage.setItem('token', data.access_token)
+            alert('Вход в систему прошел успешно!')
+            window.location.href = '/recipes.html'
+        } else {
+            const error = await response.json()
+            alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+        }
+    } catch (error) {
+        console.error('Ошибка при входе:', error)
+        alert('Ошибка при входе: ' + error.message)
     }
 }
