@@ -1,6 +1,14 @@
-async function loadRecipes() {
+async function loadRecipes(search = '', category = '', skip = 0, limit = 10) {
     try {
-        const response = await apiRequest('/recipes', 'GET')
+        const params = new URLSearchParams()
+        if (search) params.append('search', search)
+        if (category) params.append('category', category)
+        params.append('skip', skip)
+        params.append('limit', limit)
+
+        const url = `/recipes?${params.toString()}`
+        const response = await apiRequest(url, 'GET')
+
         if (response.ok) {
             const recipes = await response.json()
             renderRecipes(recipes)
