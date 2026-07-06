@@ -144,3 +144,45 @@ async function getRecipe(id) {
         return null
     }
 }
+
+async function loadRecipeDetail(id) {
+    try {
+        const recipe = await getRecipe(id)
+        if (!recipe) {
+            document.querySelector('#recipe-detail').innerHTML = `
+                <div class="text-center text-white">
+                    <h1>Рецепт не найден</h1>
+                    <a href="recipes.html" class="btn btn-accent mt-3">Вернуться к рецептам</a>
+                </div>
+            `
+            return
+        }
+
+        const html = `
+            <div class="text-white">
+                <h1 class="display-4">${recipe.title}</h1>
+                <p class="lead">${recipe.description || 'Без описания'}</p>
+                <hr>
+                <p><strong>Категория:</strong> ${recipe.category}</p>
+                <p><strong>Время приготовления:</strong> ${recipe.cooking_time} мин</p>
+                <p><strong>Автор:</strong> ${recipe.user_name || 'Неизвестен'}</p>
+                <h3 class="mt-4">📝 Ингредиенты</h3>
+                <ul class="list-unstyled">
+                    ${recipe.ingredients.map(ing => `<li>• ${ing}</li>`).join('')}
+                </ul>
+                <h3 class="mt-4">📖 Инструкция</h3>
+                <p>${recipe.instructions}</p>
+                <div class="mt-4">
+                    <a href="edit-recipe.html?id=${recipe.id}" class="btn btn-primary">✏️ Редактировать</a>
+                    <button onclick="deleteRecipe(${recipe.id})" class="btn btn-danger">🗑️ Удалить</button>
+                    <a href="recipes.html" class="btn btn-outline-light">← Назад</a>
+                </div>
+            </div>
+        `
+
+        document.querySelector('#recipe-detail').innerHTML = html
+    } catch (error) {
+        console.error('Ошибка загрузки деталей рецепта:', error)
+        alert('Ошибка загрузки рецепта')
+    }
+}
