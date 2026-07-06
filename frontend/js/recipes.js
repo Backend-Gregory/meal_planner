@@ -10,6 +10,7 @@ async function loadRecipes() {
         }
     } catch (error) {
         console.error('Ошибка загрузки рецептов:', error)
+        alert('Ошибка загрузки рецептов')
     }
 }
 
@@ -38,4 +39,64 @@ function renderRecipes(recipes) {
         </div>
     `).join('')
     recipesContainer.innerHTML = html
+}
+
+async function createRecipe() {
+    try {
+        const title = document.querySelector('#recipe_title').value
+        const description = document.querySelector('#recipe_description').value
+        const ingredientsText = document.querySelector('#recipe_ingredients').value
+        const instructions = document.querySelector('#recipe_instructions').value
+        const category = document.querySelector('#recipe_category').value
+        const cooking_time = parseInt(document.querySelector('#recipe_cooking_time').value)
+
+        switch (true) {
+            case !title:
+                alert('Введите название рецепта')
+                return
+            case !description:
+                alert('Введите описание рецепта')
+                return
+            case !ingredientsText:
+                alert('Введите ингредиенты рецепта')
+                return
+            case !instructions:
+                alert('Введите инструкции рецепта')
+                return
+            case !category:
+                alert('Выберите категорию рецепта')
+                return
+            case isNaN(cooking_time):
+                alert('Введите корректное время приготовления')
+                return
+        }
+
+        const ingredients = ingredientsText
+        .split('\n')
+        .filter(ingredient => ingredient.trim() !== '')
+
+        const data = {
+            title: title,
+            description: description || '',
+            ingredients: ingredients,
+            instructions: instructions,
+            category: category,
+            cooking_time: cooking_time
+        }
+
+        const response = await apiRequest('/recipes', 'POST', data)
+
+        if (response.ok) {
+            alert('Рецепт создан! 🎉')
+            window.location.href = 'recipes.html'
+        } else{
+            const error = await response.json()
+            alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+        }
+
+    }
+    catch (error) {
+        console.error('Ошибка создания рецепта:', error)
+        alert('Ошибка создания рецепта')
+    }
 }
