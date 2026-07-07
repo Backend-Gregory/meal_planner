@@ -3,7 +3,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import users, recipes, plans, shopping, admin
-from database import engine, Base
+from app.database import engine, Base
 from time import time
 import logging
 

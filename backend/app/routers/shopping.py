@@ -2,8 +2,8 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.database import get_session
-from models import ShoppingList, User
-from schemas import ShoppingItemCreate, ShoppingItemResponse, ShoppingItemUpdate
+from app.models import ShoppingList, User
+from app.schemas import ShoppingItemCreate, ShoppingItemResponse, ShoppingItemUpdate
 from app.dependencies import get_current_user
 from datetime import datetime, timedelta, date
 

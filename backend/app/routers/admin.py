@@ -3,8 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from sqlalchemy import select
 from app.database import get_session
-from models import User, Recipe
-from schemas import UserResponse, RecipeResponse
+from app.models import User, Recipe
+from app.schemas import UserResponse, RecipeResponse
 from app.dependencies import get_current_user
 
 router = APIRouter(prefix="/admin", tags=["admin"])

@@ -3,8 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from sqlalchemy import select
 from app.database import get_session
-from models import Plan, User, Recipe
-from schemas import PlanDay, PlanCreate, PlanResponse
+from app.models import Plan, User, Recipe
+from app.schemas import PlanDay, PlanCreate, PlanResponse
 from app.dependencies import get_current_user
 from datetime import datetime, timedelta, date
 
