@@ -87,7 +87,7 @@ async function createRecipe() {
 async function deleteRecipe(id) {
     if (!confirm('Удалить рецепт?')) return
     try {
-        const response = await apiRequest(`/recipes/${id}/`, 'DELETE')
+        const response = await apiRequest(`/recipes/${id}`, 'DELETE')
         if (response.ok) {
             alert('Рецепт удалён!')
             loadRecipes()
@@ -104,7 +104,7 @@ async function deleteRecipe(id) {
 // ===== ПОЛУЧЕНИЕ ОДНОГО РЕЦЕПТА =====
 async function getRecipe(id) {
     try {
-        const response = await apiRequest(`/recipes/${id}/`, 'GET')
+        const response = await apiRequest(`/recipes/${id}`, 'GET')
         if (!response.ok) {
             const error = await response.json()
             alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
@@ -182,7 +182,7 @@ async function updateRecipeFromForm() {
 
         const ingredients = ingredientsText.split('\n').filter(i => i.trim())
 
-        const response = await apiRequest(`/recipes/${currentRecipeId}/`, 'PUT', {
+        const response = await apiRequest(`/recipes/${currentRecipeId}`, 'PUT', {
             title, description: description || '', ingredients, instructions, category, cooking_time
         })
 
