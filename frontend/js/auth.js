@@ -40,15 +40,18 @@ async function login() {
             alert('Вход в систему прошел успешно!')
             window.location.href = '/recipes.html'
         } else {
+            const errorData = await response.json()
             let errorMessage = 'Неизвестная ошибка'
-            try {
-                const errorData = await response.json()
+
+            if (response.status === 422 && errorData.detail) {
+                const messages = errorData.detail.map(err => err.msg).join(', ')
+                errorMessage = messages
+            } else {
                 errorMessage = errorData.detail || errorData.message || JSON.stringify(errorData)
-            } catch {
-                errorMessage = 'Ошибка сервера'
             }
+
             alert('Ошибка: ' + errorMessage)
-}
+        }
     } catch (error) {
         console.error('Ошибка при входе:', error)
         alert('Ошибка при входе: ' + error.message)
