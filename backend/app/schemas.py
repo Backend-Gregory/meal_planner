@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field, EmailStr, ConfigDict
 from datetime import datetime, date
 
 class UserCreate(BaseModel):
@@ -15,6 +15,8 @@ class UserResponse(BaseModel):
     name: str = Field(..., description="Имя пользователя")
     email: EmailStr = Field(..., description="Почта пользователя")
     created_at: datetime = Field(..., description="Дата создания пользователя")
+
+    model_config = ConfigDict(from_attributes=True)
 
 class UserUpdate(BaseModel):
     name: str | None = Field(None, min_length=1, max_length=100, description="Имя пользователя")
@@ -40,6 +42,8 @@ class RecipeResponse(RecipeCreate):
     id: int = Field(..., description="id рецепта")
     user_id: int = Field(..., description="id пользователя рецепта")
     user_name: str = Field(..., description="Имя пользователя рецепта")
+
+    model_config = ConfigDict(from_attributes=True)
 
 class RecipeUpdate(BaseModel):
     title: str | None = Field(None, min_length=1, max_length=100, description="Название рецепта")
@@ -67,6 +71,8 @@ class PlanResponse(BaseModel):
     recipe_id: int = Field(..., description="id рецепта")
     meal_type: str = Field(..., description="Тип приема пищи")
 
+    model_config = ConfigDict(from_attributes=True)
+
 class ShoppingItemCreate(BaseModel):
     ingredient: str = Field(..., min_length=1, max_length=100, description="Ингредиент")
     quantity: str = Field(..., min_length=1, max_length=50, description="Кол-во ингредиентов")
@@ -74,6 +80,8 @@ class ShoppingItemCreate(BaseModel):
 class ShoppingItemResponse(ShoppingItemCreate):
     id: int = Field(..., description="id записи в системе покупок")
     purchased: bool = Field(..., description="Статус покупки")
+
+    model_config = ConfigDict(from_attributes=True)
 
 class ShoppingItemUpdate(BaseModel):
     purchased: bool

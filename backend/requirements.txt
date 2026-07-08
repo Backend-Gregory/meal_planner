@@ -4,5 +4,7 @@ sqlalchemy
 asyncpg
 alembic
 python-dotenv
-passlib[bcrypt]
+passlib
 python-jose[cryptography]
+email-validator
+bcrypt==4.1.2
