@@ -1,75 +1,87 @@
 <!DOCTYPE html>
 <html lang="ru">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="Создание рецепта">
-        <meta name="keywords" content="Planner food, Meal_Planner, создать рецепт">
-        <title>Создать рецепт — Meal Planner</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="css/style.css">
-        <script src="js/api.js" defer></script>
-        <script src="js/auth.js" defer></script>
-        <script src="js/recipes.js" defer></script>
-        <script>
-            checkAuth()
-        </script>
-        <script>
-            initEditRecipePage()
-        </script>
-    </head>
-    <body>
-        <header>
-            <div>
-                <a href="index.html">Meal Planner</a>
-                <div>
-                    <a href="recipes.html">Рецепты</a>
-                    <a href="plans.html">Планы</a>
-                    <a href="shopping.html">Список покупок</a>
-                    <button onclick="logout()">Выйти</button>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создать рецепт — Meal Planner</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <script src="js/api.js" defer></script>
+    <script src="js/auth.js" defer></script>
+    <script src="js/recipes.js" defer></script>
+</head>
+<body class="bg-gradient-custom">
+
+    <!-- ШАПКА -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-nav-custom">
+            <div class="container">
+                <a class="navbar-brand" href="index.html">🍽️ Meal Planner</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link" href="recipes.html">Рецепты</a></li>
+                        <li class="nav-item"><a class="nav-link" href="plans.html">Планы</a></li>
+                        <li class="nav-item"><a class="nav-link" href="shopping.html">Список покупок</a></li>
+                        <li class="nav-item"><a class="nav-link" href="admin.html">Админ</a></li>
+                        <li class="nav-item">
+                            <button class="btn btn-outline-light btn-sm" onclick="logout()">Выйти</button>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </header>
-        <main>
-            <section>
-                <h1>Создать рецепт</h1>
-                <form>
-                    <div>
-                        <label for="recipe_title">Название</label>
-                        <input id="recipe_title" type="text" name="recipe-title" placeholder="Введите название">
+        </nav>
+    </header>
+
+    <!-- ФОРМА СОЗДАНИЯ -->
+    <main>
+        <div class="container py-5">
+            <div class="glass-card text-white mx-auto" style="max-width: 700px;">
+                <h2 class="text-center mb-4 fw-bold">📝 Создать рецепт</h2>
+                <form id="createRecipeForm">
+                    <div class="mb-3">
+                        <label for="recipe_title" class="form-label">Название</label>
+                        <input type="text" class="form-control" id="recipe_title" required>
                     </div>
-                    <div>
-                        <label for="recipe_description">Описание (необязательно)</label>
-                        <textarea id="recipe_description" name="recipe_description" placeholder="Введите описание"></textarea>
+                    <div class="mb-3">
+                        <label for="recipe_description" class="form-label">Описание</label>
+                        <textarea class="form-control" id="recipe_description" rows="2"></textarea>
                     </div>
-                    <div>
-                        <label for="recipe_ingredients">Ингредиенты (каждый с новой строки)</label>
-                        <textarea name="recipe_ingredients" id="recipe_ingredients" placeholder="Введите ингредиенты"></textarea>
+                    <div class="mb-3">
+                        <label for="recipe_ingredients" class="form-label">Ингредиенты (каждый с новой строки)</label>
+                        <textarea class="form-control" id="recipe_ingredients" rows="4" required></textarea>
                     </div>
-                    <div>
-                        <label for="recipe_instructions">Инструкция по приготовлению</label>
-                        <textarea name="recipe_instructions" id="recipe_instructions" placeholder="Введите инструкцию"></textarea>
+                    <div class="mb-3">
+                        <label for="recipe_instructions" class="form-label">Инструкция</label>
+                        <textarea class="form-control" id="recipe_instructions" rows="4" required></textarea>
                     </div>
-                    <div>
-                        <label for="recipe_category">Категория</label>
-                        <select name="recipe_category" id="recipe_category">
+                    <div class="mb-3">
+                        <label for="recipe_category" class="form-label">Категория</label>
+                        <select class="form-select" id="recipe_category">
                             <option value="breakfast">Завтрак</option>
                             <option value="lunch">Обед</option>
                             <option value="dinner">Ужин</option>
+                            <option value="dessert">Десерт</option>
+                            <option value="snack">Перекус</option>
                         </select>
                     </div>
-                    <div>
-                        <label for="recipe_cooking_time">Время приготовления (мин)</label>
-                        <input id="recipe_cooking_time" type="number" name="recipe_cooking_time" placeholder="Введите время приготовления">
+                    <div class="mb-3">
+                        <label for="recipe_cooking_time" class="form-label">Время (мин)</label>
+                        <input type="number" class="form-control" id="recipe_cooking_time" required>
                     </div>
-                    <div>
-                        <button type="submit">Сохранить</button>
-                        <a href="recipes.html">Отмена</a>
-                        <button type="reset">Очистить</button>
-                    </div>
+                    <button type="button" class="btn btn-accent w-100" onclick="createRecipe()">💾 Сохранить</button>
+                    <a href="recipes.html" class="btn btn-outline-light w-100 mt-2">Отмена</a>
                 </form>
-            </section>
-        </main>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    </body>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        checkAuth()
+    </script>
+</body>
 </html>
