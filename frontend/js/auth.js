@@ -30,42 +30,32 @@ async function login() {
         const password = document.querySelector('#password').value
         if (!email) throw new Error('Введите email')
         if (!password) throw new Error('Введите пароль')
-        const response = await apiRequest('/auth/login', 'POST', {
-            email: email,
-            password: password
-        })
+
+        const response = await apiRequest('/auth/login', 'POST', { email, password })
+
         if (response.ok) {
             const data = await response.json()
-            localStorage.setItem('token', data.access_token)
-            alert('Вход в систему прошел успешно!')
+            localStorage.setItem('access_token', data.access_token)
+            localStorage.setItem('refresh_token', data.refresh_token)
+            alert('Вход выполнен!')
             window.location.href = '/recipes.html'
         } else {
             const errorData = await response.json()
-            let errorMessage = 'Неизвестная ошибка'
-
-            if (response.status === 422 && errorData.detail) {
-                const messages = errorData.detail.map(err => err.msg).join(', ')
-                errorMessage = messages
-            } else {
-                errorMessage = errorData.detail || errorData.message || JSON.stringify(errorData)
-            }
-
-            alert('Ошибка: ' + errorMessage)
+            alert('Ошибка: ' + (errorData.detail || 'Неизвестная ошибка'))
         }
     } catch (error) {
-        console.error('Ошибка при входе:', error)
         alert('Ошибка при входе: ' + error.message)
     }
 }
 
 async function logout() {
-    localStorage.removeItem('token')
-    alert('Вы вышли из системы.')
+    localStorage.removeItem('access_token')
+    localStorage.removeItem('refresh_token')
     window.location.href = '/login.html'
 }
 
 async function checkAuth() {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('access_token')
     if (!token) {
         window.location.href = '/login.html'
         return
@@ -74,11 +64,13 @@ async function checkAuth() {
     try {
         const response = await apiRequest('/auth/me', 'GET')
         if (!response.ok) {
-            localStorage.removeItem('token')
+            localStorage.removeItem('access_token')
+            localStorage.removeItem('refresh_token')
             window.location.href = '/login.html'
         }
     } catch (error) {
-        localStorage.removeItem('token')
+        localStorage.removeItem('access_token')
+        localStorage.removeItem('refresh_token')
         window.location.href = '/login.html'
     }
 }
