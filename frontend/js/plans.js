@@ -110,3 +110,23 @@ function renderPlans(plans) {
 
     container.innerHTML = html
 }
+
+// ===== СОЗДАНИЕ ПЛАНА =====
+async function createPlan(weekStart, daysData) {
+    try {
+        const response = await apiRequest('/plans/', 'POST', {
+            week_start: weekStart,
+            days: daysData
+        })
+        if (response.ok) {
+            alert('План создан! 🎉')
+            loadCurrentPlan()
+        } else {
+            const error = await response.json()
+            alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+        }
+    } catch (e) {
+        console.error('Ошибка создания плана:', e)
+        alert('Ошибка создания плана')
+    }
+}
