@@ -256,3 +256,42 @@ function showEditForm(dayName, mealData) {
     const modal = new bootstrap.Modal(document.getElementById('editPlanModal'))
     modal.show()
 }
+
+async function saveEditPlan() {
+    const breakfast = document.getElementById('edit_breakfast').value
+    const lunch = document.getElementById('edit_lunch').value
+    const dinner = document.getElementById('edit_dinner').value
+
+    const dayName = editPlanDay
+    const weekStart = editPlanWeek
+
+    const days = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье']
+    const dayOfWeek = days.indexOf(dayName)
+
+    const daysData = [{
+        day_of_week: dayOfWeek,
+        breakfast_recipe_id: breakfast ? parseInt(breakfast) : null,
+        lunch_recipe_id: lunch ? parseInt(lunch) : null,
+        dinner_recipe_id: dinner ? parseInt(dinner) : null
+    }]
+
+    try {
+        const response = await apiRequest(`/plans/${weekStart}`, 'PUT', {
+            week_start: weekStart,
+            days: daysData
+        })
+
+        if (response.ok) {
+            alert('План обновлён! 🎉')
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editPlanModal'))
+            modal.hide()
+            loadCurrentPlan()
+        } else {
+            const error = await response.json()
+            alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+        }
+    } catch (e) {
+        console.error('Ошибка обновления плана:', e)
+        alert('Ошибка обновления плана')
+    }
+}
