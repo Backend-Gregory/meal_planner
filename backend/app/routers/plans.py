@@ -139,3 +139,69 @@ async def delete_plan(
     
     await session.delete(plan)
     await session.commit()
+
+@router.put('/{week_start}')
+async def update_plan(
+    week_start: date,
+    plan_data: PlanUpdate,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    result = await session.execute(
+        select(Plan).where(
+            Plan.user_id == current_user.id,
+            Plan.week_start == week_start
+        )
+    )
+    existing_plans = result.scalars().all()
+    
+    if not existing_plans:
+        raise HTTPException(status_code=404, detail="Plan not found for this week")
+
+    meals_map = {}
+    for day in plan_data.days:
+        meals_map[day.day_of_week] = {
+            'breakfast': day.breakfast_recipe_id,
+            'lunch': day.lunch_recipe_id,
+            'dinner': day.dinner_recipe_id
+        }
+
+    for plan in existing_plans:
+        meal_data = meals_map.get(plan.day_of_week, {})
+        new_recipe_id = meal_data.get(plan.meal_type)
+        
+        if new_recipe_id is not None:
+            # Проверяем, что рецепт существует
+            recipe = await session.get(Recipe, new_recipe_id)
+            if not recipe:
+                raise HTTPException(status_code=404, detail=f"Recipe {new_recipe_id} not found")
+            
+            plan.recipe_id = new_recipe_id
+
+    existing_keys = {(p.day_of_week, p.meal_type) for p in existing_plans}
+    
+    for day_of_week, meals in meals_map.items():
+        for meal_type, recipe_id in meals.items():
+            if recipe_id and (day_of_week, meal_type) not in existing_keys:
+                recipe = await session.get(Recipe, recipe_id)
+                if not recipe:
+                    raise HTTPException(status_code=404, detail=f"Recipe {recipe_id} not found")
+                
+                new_plan = Plan(
+                    user_id=current_user.id,
+                    week_start=week_start,
+                    day_of_week=day_of_week,
+                    recipe_id=recipe_id,
+                    meal_type=meal_type
+                )
+                session.add(new_plan)
+
+    await session.commit()
+
+    result = await session.execute(
+        select(Plan).where(
+            Plan.user_id == current_user.id,
+            Plan.week_start == week_start
+        )
+    )
+    return result.scalars().all()
