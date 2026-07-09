@@ -148,3 +148,21 @@ async function copyPlan() {
         alert('Ошибка копирования плана')
     }
 }
+
+// ===== УДАЛЕНИЕ ПЛАНА =====
+async function deletePlan(id) {
+    if (!confirm('Удалить этот приём пищи?')) return
+    try {
+        const response = await apiRequest(`/plans/${id}`, 'DELETE')
+        if (response.ok) {
+            alert('Удалено!')
+            loadCurrentPlan()
+        } else {
+            const error = await response.json()
+            alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+        }
+    } catch (e) {
+        console.error('Ошибка удаления плана:', e)
+        alert('Ошибка удаления плана')
+    }
+}
