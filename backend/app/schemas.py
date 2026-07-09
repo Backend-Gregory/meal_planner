@@ -73,6 +73,10 @@ class PlanResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+class PlanUpdate(BaseModel):
+    week_start: date
+    days: list[PlanDay]
+
 class ShoppingItemCreate(BaseModel):
     ingredient: str = Field(..., min_length=1, max_length=100, description="Ингредиент")
     quantity: str = Field(..., min_length=1, max_length=50, description="Кол-во ингредиентов")
