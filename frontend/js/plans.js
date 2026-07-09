@@ -11,3 +11,9 @@ async function loadRecipesForPlan() {
         console.error('Ошибка загрузки рецептов:', e)
     }
 }
+
+function getRecipeTitle(id) {
+    if (!id) return 'Не выбран'
+    const recipe = recipesCache.find(r => r.id === id)
+    return recipe ? recipe.title : `Рецепт #${id}`
+}
