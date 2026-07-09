@@ -1,6 +1,7 @@
-checkAuth()
-
-loadRecipes()
+document.addEventListener('DOMContentLoaded', async function() {
+    await checkAuth()
+    loadRecipes()
+})
 
 const searchInput = document.getElementById('searchInput')
 const categoryFilter = document.getElementById('categoryFilter')
