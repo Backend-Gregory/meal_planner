@@ -1,11 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from jose import jwt
 from app.database import get_session
 from app.models import User
 from app.schemas import UserCreate, UserLogin, UserResponse, Token, ChangePassword
-from app.auth import hash_password, verify_password, create_access_token
+from app.auth import hash_password, verify_password, create_access_token, create_refresh_token
 from app.dependencies import get_current_user
+from app.config import settings
+
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -39,8 +44,9 @@ async def login(user: UserLogin, session: AsyncSession = Depends(get_session)):
     
     user_id = db_user.id
     access_token = create_access_token(user_id)
+    refresh_token = create_refresh_token(user_id)
 
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "refresh_token": refresh_token}
 
 @router.get('/me', response_model=UserResponse)
 async def get_me(current_user: User = Depends(get_current_user)):
@@ -63,3 +69,26 @@ async def change_password(
     await session.commit()
 
     return {"message": "Password changed successfully"}
+
+@router.post("/refresh", response_model=Token)
+async def refresh_access_token(
+    refresh_token: str = Body(..., embed=True),
+    session: AsyncSession = Depends(get_session)
+):
+    try:
+        payload = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get('sub')
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Invalid refresh token")
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Refresh token expired")
+    except jwt.JWTError:
+        raise HTTPException(status_code=401, detail="Invalid refresh token")
+    
+    user = await session.get(User, int(user_id))
+    if not user:
+        raise HTTPException(status_code=401, detail='User not found')
+    
+    new_access_token = create_access_token(user_id)
+
+    return {"access_token": new_access_token, 'refresh_token': refresh_token}
