@@ -60,3 +60,26 @@ function renderShoppingList(items) {
 
     container.innerHTML = html
 }
+
+// ===== ПЕРЕКЛЮЧЕНИЕ СТАТУСА =====
+function showToast(message, type = 'info') {
+    alert(message)
+}
+
+async function togglePurchased(id, currentStatus) {
+    try {
+        const response = await apiRequest(`/shopping/${id}`, 'PATCH', {
+            purchased: !currentStatus
+        })
+        if (response.ok) {
+            showToast('Статус обновлён!', 'success')
+            loadShoppingList()
+        } else {
+            const error = await response.json()
+            showToast('Ошибка: ' + (error.detail || 'Неизвестная ошибка'), 'error')
+        }
+    } catch (e) {
+        console.error('Ошибка обновления статуса:', e)
+        showToast('Ошибка обновления статуса', 'error')
+    }
+}
