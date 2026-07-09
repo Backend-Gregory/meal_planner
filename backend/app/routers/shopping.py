@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from app.database import get_session
 from app.models import ShoppingList, User
 from app.schemas import ShoppingItemCreate, ShoppingItemResponse, ShoppingItemUpdate
@@ -49,3 +49,19 @@ async def update_shopping_item(
     await session.commit()
     await session.refresh(item)
     return ShoppingItemResponse.model_validate(item)
+
+@router.delete('/clear', status_code=204)
+async def clear_shopping_list(
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    today = datetime.now().date()
+    week_start = today - timedelta(days=today.weekday())
+
+    await session.execute(
+        delete(ShoppingList).where(
+            ShoppingList.user_id == current_user.id,
+            ShoppingList.week_start == week_start
+        )
+    )
+    await session.commit()
