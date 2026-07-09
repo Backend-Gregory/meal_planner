@@ -222,3 +222,37 @@ function openEditPlan(dayName, weekStart) {
 
     showEditForm(dayName, mealData)
 }
+
+function showEditForm(dayName, mealData) {
+    const body = document.getElementById('editPlanBody')
+    const mealTypes = [
+        { key: 'breakfast', label: '🍳 Завтрак' },
+        { key: 'lunch', label: '🥗 Обед' },
+        { key: 'dinner', label: '🍽 Ужин' }
+    ]
+
+    let html = `<h5>${dayName}</h5><hr>`
+    mealTypes.forEach(meal => {
+        const selected = mealData[meal.key] || ''
+        html += `
+            <div class="mb-3">
+                <label class="form-label">${meal.label}</label>
+                <select class="form-select" id="edit_${meal.key}">
+                    <option value="">— Не выбрано —</option>
+                    ${recipesCache.map(r => `
+                        <option value="${r.id}" ${r.id == selected ? 'selected' : ''}>${r.title}</option>
+                    `).join('')}
+                </select>
+            </div>
+        `
+    })
+
+    html += `
+        <button class="btn btn-accent w-100" onclick="saveEditPlan()">💾 Сохранить</button>
+    `
+
+    body.innerHTML = html
+
+    const modal = new bootstrap.Modal(document.getElementById('editPlanModal'))
+    modal.show()
+}
