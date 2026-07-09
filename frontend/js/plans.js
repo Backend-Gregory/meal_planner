@@ -166,3 +166,20 @@ async function deletePlan(id) {
         alert('Ошибка удаления плана')
     }
 }
+
+// ===== ЗАГРУЗКА ПЛАНА ПО НЕДЕЛЕ =====
+async function loadPlanByWeek(weekStart) {
+    try {
+        const response = await apiRequest(`/plans/${weekStart}`, 'GET')
+        if (response.ok) {
+            const plans = await response.json()
+            renderPlans(plans)
+        } else {
+            const error = await response.json()
+            alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+        }
+    } catch (e) {
+        console.error('Ошибка загрузки плана по неделе:', e)
+        alert('Ошибка загрузки плана')
+    }
+}
