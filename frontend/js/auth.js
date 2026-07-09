@@ -67,7 +67,18 @@ async function logout() {
 async function checkAuth() {
     const token = localStorage.getItem('token')
     if (!token) {
-        alert('Вы не авторизованы. Пожалуйста, войдите в систему.')
+        window.location.href = '/login.html'
+        return
+    }
+
+    try {
+        const response = await apiRequest('/auth/me', 'GET')
+        if (!response.ok) {
+            localStorage.removeItem('token')
+            window.location.href = '/login.html'
+        }
+    } catch (error) {
+        localStorage.removeItem('token')
         window.location.href = '/login.html'
     }
 }
