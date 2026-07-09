@@ -130,3 +130,21 @@ async function createPlan(weekStart, daysData) {
         alert('Ошибка создания плана')
     }
 }
+
+// ===== КОПИРОВАНИЕ ПЛАНА =====
+async function copyPlan() {
+    if (!confirm('Скопировать план на следующую неделю?')) return
+    try {
+        const response = await apiRequest('/plans/copy', 'POST')
+        if (response.ok) {
+            alert('План скопирован! 📋')
+            loadCurrentPlan()
+        } else {
+            const error = await response.json()
+            alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+        }
+    } catch (e) {
+        console.error('Ошибка копирования плана:', e)
+        alert('Ошибка копирования плана')
+    }
+}
