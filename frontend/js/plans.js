@@ -183,3 +183,42 @@ async function loadPlanByWeek(weekStart) {
         alert('Ошибка загрузки плана')
     }
 }
+
+// ===== РЕДАКТИРОВАНИЕ ПЛАНА =====
+let editPlanDay = null
+let editPlanWeek = null
+
+function openEditPlan(dayName, weekStart) {
+    editPlanDay = dayName
+    editPlanWeek = weekStart
+
+    const container = document.getElementById('plans-container')
+    const dayCards = container.querySelectorAll('.card')
+    let targetCard = null
+
+    dayCards.forEach(card => {
+        if (card.querySelector('.card-title')?.textContent === dayName) {
+            targetCard = card
+        }
+    })
+
+    if (!targetCard) {
+        alert('День не найден')
+        return
+    }
+
+    const meals = targetCard.querySelectorAll('.d-flex')
+    const mealData = {}
+    meals.forEach(meal => {
+        const label = meal.querySelector('span:first-child')?.textContent?.trim() || ''
+        const value = meal.querySelector('.badge')?.textContent || ''
+        const mealType = label.includes('Завтрак') ? 'breakfast' :
+                        label.includes('Обед') ? 'lunch' :
+                        label.includes('Ужин') ? 'dinner' : null
+        if (mealType) {
+            mealData[mealType] = value !== 'Не выбран' ? value : null
+        }
+    })
+
+    showEditForm(dayName, mealData)
+}
