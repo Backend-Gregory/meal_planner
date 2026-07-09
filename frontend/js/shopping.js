@@ -83,3 +83,20 @@ async function togglePurchased(id, currentStatus) {
         showToast('Ошибка обновления статуса', 'error')
     }
 }
+
+async function clearShoppingList() {
+    if (!confirm('Вы уверены, что хотите удалить все покупки за эту неделю?')) return
+    try {
+        const response = await apiRequest('/shopping/clear', 'DELETE')
+        if (response.ok) {
+            showToast('Список покупок очищен! 🧹', 'success')
+            loadShoppingList()
+        } else {
+            const error = await response.json()
+            showToast('Ошибка: ' + (error.detail || 'Неизвестная ошибка'), 'error')
+        }
+    } catch (e) {
+        console.error('Ошибка очистки списка:', e)
+        showToast('Ошибка очистки списка', 'error')
+    }
+}
