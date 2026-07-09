@@ -3,10 +3,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from sqlalchemy import select
 from app.database import get_session
-from app.models import Plan, User, Recipe
+from app.models import Plan, User, Recipe, ShoppingList
 from app.schemas import PlanDay, PlanCreate, PlanResponse, PlanUpdate
 from app.dependencies import get_current_user
 from datetime import datetime, timedelta, date
+from collections import Counter
 
 router = APIRouter(prefix="/plans", tags=["plans"])
 
@@ -45,8 +46,29 @@ async def create_plan(
 
     for plan in new_plans:
         await session.refresh(plan)
-    
-    return [PlanResponse.model_validate(plan) for plan in new_plans]
+
+    ingredient_counts = Counter()
+    for plan in new_plans:
+        recipe = await session.get(Recipe, plan.recipe_id)
+        if recipe and recipe.ingredients:
+            for ingredient in recipe.ingredients:
+                ingredient_counts[ingredient] += 1
+
+    shopping_items = []
+    for ingredient, count in ingredient_counts.items():
+        shopping_items.append(ShoppingList(
+            user_id=current_user.id,
+            week_start=week_start,
+            ingredient=ingredient,
+            quantity=f"{count} шт",
+            purchased=False
+        ))
+
+    if shopping_items:
+        session.add_all(shopping_items)
+        await session.commit()
+        
+        return [PlanResponse.model_validate(plan) for plan in new_plans]
 
 @router.get('/current', response_model=list[PlanResponse])
 async def get_current_plan(
