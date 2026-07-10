@@ -35,3 +35,21 @@ async function updateName(newName) {
         showToast('Ошибка обновления имени', 'error')
     }
 }
+// ===== ОБНОВЛЕНИЕ EMAIL =====
+async function updateEmail(newEmail) {
+    try {
+        const response = await apiRequest('/auth/update', 'PUT', {
+            email: newEmail
+        })
+        if (response.ok) {
+            showToast('Email обновлён!', 'success')
+            loadProfile()
+        } else {
+            const error = await response.json()
+            showToast('Ошибка: ' + (error.detail || 'Неизвестная ошибка'), 'error')
+        }
+    } catch (e) {
+        console.error('Ошибка обновления email:', e)
+        showToast('Ошибка обновления email', 'error')
+    }
+}
