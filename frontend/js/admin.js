@@ -57,3 +57,21 @@ function renderUsers(users) {
     html += `</tbody></table>`
     container.innerHTML = html
 }
+
+// ===== БЛОКИРОВКА =====
+async function blockUser(id) {
+    if (!confirm('Заблокировать пользователя?')) return
+    try {
+        const response = await apiRequest(`/admin/users/${id}/block`, 'PATCH')
+        if (response.ok) {
+            showToast('Пользователь заблокирован!', 'success')
+            loadUsers()
+        } else {
+            const error = await response.json()
+            showToast('Ошибка: ' + (error.detail || 'Неизвестная ошибка'), 'error')
+        }
+    } catch (e) {
+        console.error('Ошибка блокировки:', e)
+        showToast('Ошибка блокировки', 'error')
+    }
+}
