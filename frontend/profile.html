@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль — Meal Planner</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/api.js" defer></script>
+    <script src="js/auth.js" defer></script>
+    <script src="js/profile.js" defer></script>
+    <script src="js/pages/profile.js" defer></script>
+    <script src="js/navbar.js" defer></script>
+</head>
+<body class="bg-gradient-custom">
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-nav-custom">
+            <div class="container">
+                <a class="navbar-brand" href="index.html">🍽️ Meal Planner</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link" href="recipes.html">Рецепты</a></li>
+                        <li class="nav-item"><a class="nav-link" href="plans.html">Планы</a></li>
+                        <li class="nav-item"><a class="nav-link" href="shopping.html">Список покупок</a></li>
+                        <li class="nav-item" id="admin-link"><a class="nav-link" href="admin.html">Админ</a></li>
+                        <li class="nav-item"><a class="nav-link" href="profile.html">Профиль</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container py-5">
+            <div class="glass-card text-white mx-auto" style="max-width: 600px;">
+                <h2 class="text-center mb-4 fw-bold">👤 Профиль</h2>
+
+                <div id="profile-info" class="mb-4">
+                    <p><strong>Имя:</strong> <span id="profile-name">Загрузка...</span></p>
+                    <p><strong>Email:</strong> <span id="profile-email">Загрузка...</span></p>
+                    <p><strong>Дата регистрации:</strong> <span id="profile-created">Загрузка...</span></p>
+                </div>
+
+                <hr>
+
+                <h5 class="mt-4">✏️ Сменить имя</h5>
+                <form id="updateNameForm" class="mb-4">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="newName" placeholder="Новое имя" required>
+                    </div>
+                    <button type="submit" class="btn btn-accent w-100">Обновить имя</button>
+                </form>
+                
+                <hr>
+
+                <h5 class="mt-4">📧 Сменить email</h5>
+                <form id="updateEmailForm" class="mb-4">
+                    <div class="mb-3">
+                        <input type="email" class="form-control" id="newEmail" placeholder="Новый email" required>
+                    </div>
+                    <button type="submit" class="btn btn-accent w-100">Обновить email</button>
+                </form>
+
+                <hr>
+
+                <h5 class="mt-4">🔑 Сменить пароль</h5>
+                <form id="changePasswordForm">
+                    <div class="mb-3">
+                        <input type="password" class="form-control" id="oldPassword" placeholder="Старый пароль" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" class="form-control" id="newPassword" placeholder="Новый пароль" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" class="form-control" id="confirmPassword" placeholder="Подтвердите пароль" required>
+                    </div>
+                    <button type="submit" class="btn btn-accent w-100">Сменить пароль</button>
+                </form>
+                <hr>
+                <button class="btn btn-danger w-100 mt-3" onclick="logout()">🚪 Выйти из аккаунта</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
