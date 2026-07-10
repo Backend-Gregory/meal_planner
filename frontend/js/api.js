@@ -66,3 +66,7 @@ async function apiRequest(endpoint, method = 'GET', data = null, retry = true) {
 
     return response
 }
+
+function showToast(message, type = 'info') {
+    alert(message)
+}

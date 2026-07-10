@@ -62,10 +62,6 @@ function renderShoppingList(items) {
 }
 
 // ===== ПЕРЕКЛЮЧЕНИЕ СТАТУСА =====
-function showToast(message, type = 'info') {
-    alert(message)
-}
-
 async function togglePurchased(id, currentStatus) {
     try {
         const response = await apiRequest(`/shopping/${id}`, 'PATCH', {
