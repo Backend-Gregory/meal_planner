@@ -4,7 +4,7 @@ from sqlalchemy import select
 from jose import jwt
 from app.database import get_session
 from app.models import User
-from app.schemas import UserCreate, UserLogin, UserResponse, Token, ChangePassword
+from app.schemas import UserCreate, UserLogin, UserResponse, Token, ChangePassword, UserUpdate
 from app.auth import hash_password, verify_password, create_access_token, create_refresh_token
 from app.dependencies import get_current_user
 from app.config import settings
@@ -95,3 +95,24 @@ async def refresh_access_token(
     new_access_token = create_access_token(user_id)
 
     return {"access_token": new_access_token, 'refresh_token': refresh_token}
+
+@router.put('/update', response_model=UserResponse)
+async def update_user(
+    user_data: UserUpdate,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    if user_data.email is not None and user_data.email != current_user.email:
+        existing = await session.execute(
+            select(User).where(User.email == user_data.email)
+        )
+        if existing.scalar_one_or_none():
+            raise HTTPException(status_code=400, detail="Email already in use")
+        current_user.email = user_data.email
+    
+    if user_data.name is not None:
+        current_user.name = user_data.name
+    
+    await session.commit()
+    await session.refresh(current_user)
+    return UserResponse.model_validate(current_user)
