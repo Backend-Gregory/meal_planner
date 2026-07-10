@@ -75,3 +75,21 @@ async function blockUser(id) {
         showToast('Ошибка блокировки', 'error')
     }
 }
+
+// ===== РАЗБЛОКИРОВКА =====
+async function unblockUser(id) {
+    if (!confirm('Разблокировать пользователя?')) return
+    try {
+        const response = await apiRequest(`/admin/users/${id}/unblock`, 'PATCH')
+        if (response.ok) {
+            showToast('Пользователь разблокирован!', 'success')
+            loadUsers()
+        } else {
+            const error = await response.json()
+            showToast('Ошибка: ' + (error.detail || 'Неизвестная ошибка'), 'error')
+        }
+    } catch (e) {
+        console.error('Ошибка разблокировки:', e)
+        showToast('Ошибка разблокировки', 'error')
+    }
+}
