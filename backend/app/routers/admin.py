@@ -4,12 +4,12 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy import select
 from app.database import get_session
 from app.models import User, Recipe
-from app.schemas import UserResponse, RecipeResponse
+from app.schemas import UserResponse, AdminUserResponse, RecipeResponse
 from app.dependencies import get_current_user
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
-@router.get('/users', response_model=list[UserResponse])
+@router.get('/users', response_model=list[AdminUserResponse])
 async def get_users(
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session)
@@ -20,9 +20,9 @@ async def get_users(
     res = await session.execute(select(User))
     users = res.scalars().all()
 
-    return [UserResponse.model_validate(user) for user in users]
+    return [AdminUserResponse.model_validate(user) for user in users]
 
-@router.patch('/users/{user_id}/block', response_model=UserResponse)
+@router.patch('/users/{user_id}/block', response_model=AdminUserResponse)
 async def block_user(
     user_id: int,
     current_user: User = Depends(get_current_user),
@@ -43,9 +43,9 @@ async def block_user(
     user.is_active = False
     await session.commit()
     await session.refresh(user)
-    return UserResponse.model_validate(user)
+    return AdminUserResponse.model_validate(user)
 
-@router.patch('/users/{user_id}/unblock', response_model=UserResponse)
+@router.patch('/users/{user_id}/unblock', response_model=AdminUserResponse)
 async def unblock_user(
     user_id: int,
     current_user: User = Depends(get_current_user),
@@ -66,7 +66,7 @@ async def unblock_user(
     user.is_active = True
     await session.commit()
     await session.refresh(user)
-    return UserResponse.model_validate(user)
+    return AdminUserResponse.model_validate(user)
 
 @router.get('/recipes', response_model=list[RecipeResponse])
 async def get_recipes(
