@@ -151,3 +151,21 @@ function renderAdminRecipes(recipes) {
     html += `</tbody></table>`
     container.innerHTML = html
 }
+
+// ===== УДАЛЕНИЕ РЕЦЕПТА (АДМИН) =====
+async function deleteAdminRecipe(id) {
+    if (!confirm('Удалить этот рецепт?')) return
+    try {
+        const response = await apiRequest(`/admin/recipes/${id}`, 'DELETE')
+        if (response.ok) {
+            showToast('Рецепт удалён!', 'success')
+            loadAdminRecipes()
+        } else {
+            const error = await response.json()
+            showToast('Ошибка: ' + (error.detail || 'Неизвестная ошибка'), 'error')
+        }
+    } catch (e) {
+        console.error('Ошибка удаления рецепта:', e)
+        showToast('Ошибка удаления рецепта', 'error')
+    }
+}
