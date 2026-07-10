@@ -22,6 +22,10 @@ class UserUpdate(BaseModel):
     name: str | None = Field(None, min_length=1, max_length=100, description="Имя пользователя")
     email: EmailStr | None = Field(None, max_length=100, description="Почта пользователя")
 
+class AdminUserResponse(UserResponse):
+    is_active: bool
+    is_admin: bool
+
 class Token(BaseModel):
     access_token: str
     refresh_token: str
