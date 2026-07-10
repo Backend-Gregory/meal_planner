@@ -93,3 +93,61 @@ async function unblockUser(id) {
         showToast('Ошибка разблокировки', 'error')
     }
 }
+
+// ===== ЗАГРУЗКА РЕЦЕПТОВ =====
+async function loadAdminRecipes() {
+    try {
+        const response = await apiRequest('/admin/recipes', 'GET')
+        if (response.ok) {
+            const recipes = await response.json()
+            renderAdminRecipes(recipes)
+        } else {
+            const error = await response.json()
+            showToast('Ошибка: ' + (error.detail || 'Неизвестная ошибка'), 'error')
+        }
+    } catch (e) {
+        console.error('Ошибка загрузки рецептов:', e)
+        showToast('Ошибка загрузки рецептов', 'error')
+    }
+}
+
+function renderAdminRecipes(recipes) {
+    const container = document.getElementById('admin-recipes')
+    if (!container) return
+
+    if (!recipes || recipes.length === 0) {
+        container.innerHTML = '<p class="text-muted">Нет рецептов</p>'
+        return
+    }
+
+    let html = `
+        <table class="table table-dark table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Название</th>
+                    <th>Автор</th>
+                    <th>Категория</th>
+                    <th>Действие</th>
+                </tr>
+            </thead>
+            <tbody>
+    `
+
+    recipes.forEach(recipe => {
+        html += `
+            <tr>
+                <td>${recipe.id}</td>
+                <td>${recipe.title}</td>
+                <td>${recipe.user_name || 'Неизвестен'}</td>
+                <td>${recipe.category}</td>
+                <td>
+                    <button class="btn btn-sm btn-danger" onclick="deleteAdminRecipe(${recipe.id})">🗑️ Удалить</button>
+                </td>
+            </tr>
+        `
+    })
+
+    html += `</tbody></table>`
+    container.innerHTML = html
+}
