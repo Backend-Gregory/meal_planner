@@ -37,6 +37,9 @@ async def login(user: UserLogin, session: AsyncSession = Depends(get_session)):
     if not db_user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
+    if not db_user.is_active:
+        raise HTTPException(status_code=403, detail="Your account has been blocked")
+    
     is_password = verify_password(user.password, db_user.hashed_password)
 
     if not is_password:
