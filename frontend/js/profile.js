@@ -53,3 +53,25 @@ async function updateEmail(newEmail) {
         showToast('Ошибка обновления email', 'error')
     }
 }
+
+// ===== СМЕНА ПАРОЛЯ =====
+async function changePassword(oldPassword, newPassword) {
+    try {
+        const response = await apiRequest('/auth/change-password', 'PUT', {
+            old_password: oldPassword,
+            new_password: newPassword
+        })
+        if (response.ok) {
+            showToast('Пароль изменён!', 'success')
+            document.getElementById('oldPassword').value = ''
+            document.getElementById('newPassword').value = ''
+            document.getElementById('confirmPassword').value = ''
+        } else {
+            const error = await response.json()
+            showToast('Ошибка: ' + (error.detail || 'Неизвестная ошибка'), 'error')
+        }
+    } catch (e) {
+        console.error('Ошибка смены пароля:', e)
+        showToast('Ошибка смены пароля', 'error')
+    }
+}
