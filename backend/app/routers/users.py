@@ -4,7 +4,7 @@ from sqlalchemy import select
 from jose import jwt
 from app.database import get_session
 from app.models import User
-from app.schemas import UserCreate, UserLogin, UserResponse, Token, ChangePassword, UserUpdate
+from app.schemas import UserCreate, UserLogin, UserResponse, Token, ChangePassword, UserUpdate, AdminUserResponse
 from app.auth import hash_password, verify_password, create_access_token, create_refresh_token
 from app.dependencies import get_current_user
 from app.config import settings
@@ -51,9 +51,9 @@ async def login(user: UserLogin, session: AsyncSession = Depends(get_session)):
 
     return {"access_token": access_token, "refresh_token": refresh_token}
 
-@router.get('/me', response_model=UserResponse)
+@router.get('/me', response_model=AdminUserResponse)
 async def get_me(current_user: User = Depends(get_current_user)):
-    return UserResponse.model_validate(current_user)
+    return AdminUserResponse.model_validate(current_user)
 
 @router.put('/change-password', response_model=dict)
 async def change_password(

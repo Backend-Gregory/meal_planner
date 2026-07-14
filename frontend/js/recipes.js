@@ -12,12 +12,13 @@ async function loadRecipes(search = '', category = '', skip = 0, limit = 10) {
             const recipes = await response.json()
             renderRecipes(recipes)
         } else {
-            const error = await response.json()
-            alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
     } catch (error) {
-        console.error('Ошибка загрузки рецептов:', error)
-        alert('Ошибка загрузки рецептов')
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }
 
@@ -32,17 +33,17 @@ function renderRecipes(recipes) {
     }
 
     container.innerHTML = recipes.map(recipe => `
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
+        <div class="col-md-4 mb-4 fade-in">
+            <div class="card h-100 card-hover">
                 <div class="card-body">
                     <h5 class="card-title">${recipe.title}</h5>
-                    <p class="card-text">${recipe.description || ''}</p>
-                    <p><small>Категория: ${recipe.category}</small></p>
-                    <p><small>⏱ ${recipe.cooking_time} мин</small></p>
-                    <p><small>👤 ${recipe.user_name || 'Неизвестен'}</small></p>
-                    <a href="recipe-detail.html?id=${recipe.id}" class="btn btn-info btn-sm">📖 Подробнее</a>
-                    <a href="edit-recipe.html?id=${recipe.id}" class="btn btn-primary btn-sm">✏️ Редактировать</a>
-                    <button onclick="deleteRecipe(${recipe.id})" class="btn btn-danger btn-sm">🗑️ Удалить</button>
+                        <p class="card-text">${recipe.description || ''}</p>
+                        <p><small>Категория: ${recipe.category}</small></p>
+                        <p><small>⏱ ${recipe.cooking_time} мин</small></p>
+                        <p><small>👤 ${recipe.user_name || 'Неизвестен'}</small></p>
+                        <a href="recipe-detail.html?id=${recipe.id}" class="btn btn-info btn-sm btn-hover">📖 Подробнее</a>
+                        <a href="edit-recipe.html?id=${recipe.id}" class="btn btn-primary btn-sm btn-hover">✏️ Редактировать</a>
+                        <button onclick="deleteRecipe(${recipe.id})" class="btn btn-danger btn-sm btn-hover">🗑️ Удалить</button>
                 </div>
             </div>
         </div>
@@ -59,10 +60,11 @@ async function createRecipe() {
         const category = document.getElementById('recipe_category').value
         const cooking_time = parseInt(document.getElementById('recipe_cooking_time').value)
 
-        if (!title) return alert('Введите название')
-        if (!ingredientsText) return alert('Введите ингредиенты')
-        if (!instructions) return alert('Введите инструкцию')
-        if (!cooking_time || cooking_time < 1) return alert('Введите корректное время')
+        if (!title) return showToast('Введите название', 'warning')
+        if (!description) return showToast('Введите описание', 'warning')
+        if (!ingredientsText) return showToast('Введите ингредиенты', 'warning')
+        if (!instructions) return showToast('Введите инструкцию', 'warning')
+        if (!cooking_time || cooking_time < 1) return showToast('Введите корректное время', 'warning')
 
         const ingredients = ingredientsText.split('\n').filter(i => i.trim())
 
@@ -71,15 +73,18 @@ async function createRecipe() {
         })
 
         if (response.ok) {
-            alert('Рецепт создан! 🎉')
-            window.location.href = 'recipes.html'
+            showToast('Рецепт создан! 🎉', 'success')
+            setTimeout(() => {
+                window.location.href = 'recipes.html'
+            }, 800)
         } else {
-            const error = await response.json()
-            alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
-    } catch (e) {
-        console.error(e)
-        alert('Ошибка создания рецепта')
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }
 
@@ -89,15 +94,16 @@ async function deleteRecipe(id) {
     try {
         const response = await apiRequest(`/recipes/${id}`, 'DELETE')
         if (response.ok) {
-            alert('Рецепт удалён!')
+            showToast('Рецепт удалён!', 'success')
             loadRecipes()
         } else {
-            const error = await response.json()
-            alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
-    } catch (e) {
-        console.error(e)
-        alert('Ошибка удаления')
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }
 
@@ -106,15 +112,15 @@ async function getRecipe(id) {
     try {
         const response = await apiRequest(`/recipes/${id}`, 'GET')
         if (!response.ok) {
-            const error = await response.json()
-            alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
             return null
         }
         return await response.json()
-    } catch (e) {
-        console.error(e)
-        alert('Ошибка загрузки рецепта')
-        return null
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }
 
@@ -153,7 +159,7 @@ let currentRecipeId = null
 async function loadRecipeToEdit(id) {
     const recipe = await getRecipe(id)
     if (!recipe) {
-        alert('Рецепт не найден')
+        showToast('Рецепт не найден', 'error')
         window.location.href = 'recipes.html'
         return
     }
@@ -175,10 +181,11 @@ async function updateRecipeFromForm() {
         const category = document.getElementById('recipe_category').value
         const cooking_time = parseInt(document.getElementById('recipe_cooking_time').value)
 
-        if (!title) return alert('Введите название')
-        if (!ingredientsText) return alert('Введите ингредиенты')
-        if (!instructions) return alert('Введите инструкцию')
-        if (!cooking_time || cooking_time < 1) return alert('Введите корректное время')
+        if (!title) return showToast('Введите название', 'warning')
+        if (!description) return showToast('Введите описание', 'warning')
+        if (!ingredientsText) return showToast('Введите ингредиенты', 'warning')
+        if (!instructions) return showToast('Введите инструкцию', 'warning')
+        if (!cooking_time || cooking_time < 1) return showToast('Введите корректное время', 'warning')
 
         const ingredients = ingredientsText.split('\n').filter(i => i.trim())
 
@@ -187,15 +194,18 @@ async function updateRecipeFromForm() {
         })
 
         if (response.ok) {
-            alert('Рецепт обновлён! 🎉')
-            window.location.href = 'recipes.html'
+            showToast('Рецепт обновлён! 🎉', 'success')
+            setTimeout(() => {
+                window.location.href = 'recipes.html'
+            }, 800)
         } else {
-            const error = await response.json()
-            alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
-    } catch (e) {
-        console.error(e)
-        alert('Ошибка обновления рецепта')
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }
 

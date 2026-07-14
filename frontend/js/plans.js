@@ -26,12 +26,13 @@ async function loadCurrentPlan() {
             const plans = await response.json()
             renderPlans(plans)
         } else {
-            const error = await response.json()
-            alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
-    } catch (e) {
-        console.error('Ошибка загрузки плана:', e)
-        alert('Ошибка загрузки плана')
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }
 
@@ -70,8 +71,8 @@ function renderPlans(plans) {
         }
 
         html += `
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card glass-card text-white">
+            <div class="col-md-6 col-lg-4 mb-4 fade-in">
+                <div class="card glass-card text-white card-hover">
                     <div class="card-body">
                         <h4 class="card-title text-center">${dayName}</h4>
                         <hr>
@@ -84,7 +85,7 @@ function renderPlans(plans) {
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span>${mealTypes[meal]}</span>
                         <span class="badge bg-info">${getRecipeTitle(plan.recipe_id)}</span>
-                        <button onclick="deletePlan(${plan.id})" class="btn btn-danger btn-sm">🗑️</button>
+                        <button onclick="deletePlan(${plan.id})" class="btn btn-danger btn-sm btn-hover">🗑️</button>
                     </div>
                 `
             } else {
@@ -99,7 +100,7 @@ function renderPlans(plans) {
 
         html += `
                     <div class="mt-3 text-center">
-                        <button class="btn btn-sm btn-accent" onclick="openEditPlan('${dayName}', '${data.plans[0].week_start}')">✏️ Изменить</button>
+                        <button class="btn btn-sm btn-accent btn-hover" onclick="openEditPlan('${dayName}', '${data.plans[0].week_start}')">✏️ Изменить</button>
                     </div>
                 </div>
             </div>
@@ -119,15 +120,19 @@ async function createPlan(weekStart, daysData) {
             days: daysData
         })
         if (response.ok) {
-            alert('План создан! 🎉')
+            showToast('План создан! 🎉', 'success')
             loadCurrentPlan()
+            setTimeout(() => {
+                window.location.href = 'plans.html'
+            }, 800)            
         } else {
-            const error = await response.json()
-            alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
-    } catch (e) {
-        console.error('Ошибка создания плана:', e)
-        alert('Ошибка создания плана')
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }
 
@@ -137,15 +142,16 @@ async function copyPlan() {
     try {
         const response = await apiRequest('/plans/copy', 'POST')
         if (response.ok) {
-            alert('План скопирован! 📋')
+            showToast('План скопирован!', 'success')
             loadCurrentPlan()
         } else {
-            const error = await response.json()
-            alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
-    } catch (e) {
-        console.error('Ошибка копирования плана:', e)
-        alert('Ошибка копирования плана')
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }
 
@@ -155,15 +161,16 @@ async function deletePlan(id) {
     try {
         const response = await apiRequest(`/plans/${id}`, 'DELETE')
         if (response.ok) {
-            alert('Удалено!')
+            showToast('Удалено!', 'success')
             loadCurrentPlan()
         } else {
-            const error = await response.json()
-            alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
-    } catch (e) {
-        console.error('Ошибка удаления плана:', e)
-        alert('Ошибка удаления плана')
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }
 
@@ -175,12 +182,13 @@ async function loadPlanByWeek(weekStart) {
             const plans = await response.json()
             renderPlans(plans)
         } else {
-            const error = await response.json()
-            alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
-    } catch (e) {
-        console.error('Ошибка загрузки плана по неделе:', e)
-        alert('Ошибка загрузки плана')
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }
 
@@ -203,7 +211,7 @@ function openEditPlan(dayName, weekStart) {
     })
 
     if (!targetCard) {
-        alert('День не найден')
+        showToast('День не найден', 'warning')
         return
     }
 
@@ -235,7 +243,7 @@ function showEditForm(dayName, mealData) {
     mealTypes.forEach(meal => {
         const selected = mealData[meal.key] || ''
         html += `
-            <div class="mb-3">
+            <div class="mb-3 slide-up">
                 <label class="form-label">${meal.label}</label>
                 <select class="form-select" id="edit_${meal.key}">
                     <option value="">— Не выбрано —</option>
@@ -282,16 +290,17 @@ async function saveEditPlan() {
         })
 
         if (response.ok) {
-            alert('План обновлён! 🎉')
+            showToast('План обновлён! 🎉', 'success')
             const modal = bootstrap.Modal.getInstance(document.getElementById('editPlanModal'))
             modal.hide()
             loadCurrentPlan()
         } else {
-            const error = await response.json()
-            alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
-    } catch (e) {
-        console.error('Ошибка обновления плана:', e)
-        alert('Ошибка обновления плана')
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }

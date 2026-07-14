@@ -6,12 +6,13 @@ async function loadShoppingList() {
             const items = await response.json()
             renderShoppingList(items)
         } else {
-            const error = await response.json()
-            showToast('Ошибка: ' + (error.detail || 'Неизвестная ошибка'), 'error')
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
-    } catch (e) {
-        console.error('Ошибка загрузки списка покупок:', e)
-        showToast('Ошибка загрузки списка покупок', 'error')
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }
 
@@ -35,24 +36,24 @@ function renderShoppingList(items) {
     const notPurchased = items.filter(item => !item.purchased)
 
     let html = `
-        <div class="glass-card text-white p-4 mb-4">
+        <div class="glass-card text-white p-4 mb-4 card-hover fade-in">
             <h4 class="mb-3">✅ Куплено (${purchased.length})</h4>
             ${purchased.length === 0 ? '<p class="text-muted">Ничего не куплено</p>' : ''}
             ${purchased.map(item => `
                 <div class="d-flex justify-content-between align-items-center p-2 bg-success bg-opacity-25 rounded mb-2">
                     <span><s>${item.ingredient}</s> <small class="text-muted">${item.quantity}</small></span>
-                    <button class="btn btn-sm btn-outline-light" onclick="togglePurchased(${item.id}, true)">↩️ Вернуть</button>
+                    <button class="btn btn-sm btn-outline-light btn-hover" onclick="togglePurchased(${item.id}, true)">↩️ Вернуть</button>
                 </div>
             `).join('')}
         </div>
 
-        <div class="glass-card text-white p-4">
+        <div class="glass-card text-white p-4 card-hover fade-in">
             <h4 class="mb-3">📦 Не куплено (${notPurchased.length})</h4>
             ${notPurchased.length === 0 ? '<p class="text-muted">Всё куплено! 🎉</p>' : ''}
             ${notPurchased.map(item => `
                 <div class="d-flex justify-content-between align-items-center p-2 bg-dark bg-opacity-25 rounded mb-2">
                     <span>${item.ingredient} <small class="text-muted">${item.quantity}</small></span>
-                    <button class="btn btn-sm btn-success" onclick="togglePurchased(${item.id}, false)">✅ Купить</button>
+                    <button class="btn btn-sm btn-success btn-hover" onclick="togglePurchased(${item.id}, false)">✅ Купить</button>
                 </div>
             `).join('')}
         </div>
@@ -71,12 +72,13 @@ async function togglePurchased(id, currentStatus) {
             showToast('Статус обновлён!', 'success')
             loadShoppingList()
         } else {
-            const error = await response.json()
-            showToast('Ошибка: ' + (error.detail || 'Неизвестная ошибка'), 'error')
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
-    } catch (e) {
-        console.error('Ошибка обновления статуса:', e)
-        showToast('Ошибка обновления статуса', 'error')
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }
 
@@ -88,11 +90,12 @@ async function clearShoppingList() {
             showToast('Список покупок очищен! 🧹', 'success')
             loadShoppingList()
         } else {
-            const error = await response.json()
-            showToast('Ошибка: ' + (error.detail || 'Неизвестная ошибка'), 'error')
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
-    } catch (e) {
-        console.error('Ошибка очистки списка:', e)
-        showToast('Ошибка очистки списка', 'error')
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }

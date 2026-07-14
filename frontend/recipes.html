@@ -14,6 +14,7 @@
     <script src="js/navbar.js" defer></script>
 </head>
 <body class="bg-gradient-custom">
+    <div id="toastContainer" class="toast-container"></div>
 
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-nav-custom">
@@ -36,7 +37,7 @@
     </header>
 
     <main>
-        <div class="container py-5">
+        <div class="container py-5 slide-up">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="text-white text-shadow">📖 Мои рецепты</h1>
                 <a href="create-recipe.html" class="btn btn-accent">+ Создать рецепт</a>
@@ -52,8 +53,6 @@
                         <option value="breakfast">Завтрак</option>
                         <option value="lunch">Обед</option>
                         <option value="dinner">Ужин</option>
-                        <option value="dessert">Десерт</option>
-                        <option value="snack">Перекус</option>
                     </select>
                 </div>
                 <div class="col-md-2">

@@ -67,6 +67,50 @@ async function apiRequest(endpoint, method = 'GET', data = null, retry = true) {
     return response
 }
 
-function showToast(message, type = 'info') {
-    alert(message)
+function getErrorMessage(errorData) {
+    if (!errorData) return 'Неизвестная ошибка'
+    if (typeof errorData === 'string') return errorData
+    if (Array.isArray(errorData.detail)) {
+        return errorData.detail.map(err => err.msg).join(', ')
+    }
+    if (errorData.detail) return errorData.detail
+    if (errorData.message) return errorData.message
+    return JSON.stringify(errorData)
+}
+
+function showToast(message, type = 'info', duration = 3000) {
+    const container = document.getElementById('toastContainer')
+
+    if (!container) {
+        const newContainer = document.createElement('div')
+        newContainer.id = 'toastContainer'
+        newContainer.className = 'toast-container'
+        document.body.appendChild(newContainer)
+    }
+
+    const toastContainer = document.getElementById('toastContainer')
+
+    const toast = document.createElement('div')
+    toast.className = `toast-message ${type}`
+
+    const icons = {
+        success: '✅',
+        error: '❌',
+        warning: '⚠️',
+        info: 'ℹ️'
+    }
+
+    toast.innerHTML = `
+        <span class="toast-icon">${icons[type] || 'ℹ️'}</span>
+        <span>${message}</span>
+    `
+
+    toastContainer.appendChild(toast)
+
+    setTimeout(() => {
+        toast.classList.add('hide')
+        setTimeout(() => {
+            toast.remove()
+        }, 400)
+    }, duration)
 }

@@ -6,12 +6,13 @@ async function loadUsers() {
             const users = await response.json()
             renderUsers(users)
         } else {
-            const error = await response.json()
-            showToast('Ошибка: ' + (error.detail || 'Неизвестная ошибка'), 'error')
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
-    } catch (e) {
-        console.error('Ошибка загрузки пользователей:', e)
-        showToast('Ошибка загрузки пользователей', 'error')
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }
 
@@ -67,12 +68,13 @@ async function blockUser(id) {
             showToast('Пользователь заблокирован!', 'success')
             loadUsers()
         } else {
-            const error = await response.json()
-            showToast('Ошибка: ' + (error.detail || 'Неизвестная ошибка'), 'error')
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
-    } catch (e) {
-        console.error('Ошибка блокировки:', e)
-        showToast('Ошибка блокировки', 'error')
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }
 
@@ -85,12 +87,13 @@ async function unblockUser(id) {
             showToast('Пользователь разблокирован!', 'success')
             loadUsers()
         } else {
-            const error = await response.json()
-            showToast('Ошибка: ' + (error.detail || 'Неизвестная ошибка'), 'error')
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
-    } catch (e) {
-        console.error('Ошибка разблокировки:', e)
-        showToast('Ошибка разблокировки', 'error')
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }
 
@@ -102,12 +105,13 @@ async function loadAdminRecipes() {
             const recipes = await response.json()
             renderAdminRecipes(recipes)
         } else {
-            const error = await response.json()
-            showToast('Ошибка: ' + (error.detail || 'Неизвестная ошибка'), 'error')
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
-    } catch (e) {
-        console.error('Ошибка загрузки рецептов:', e)
-        showToast('Ошибка загрузки рецептов', 'error')
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }
 
@@ -161,11 +165,12 @@ async function deleteAdminRecipe(id) {
             showToast('Рецепт удалён!', 'success')
             loadAdminRecipes()
         } else {
-            const error = await response.json()
-            showToast('Ошибка: ' + (error.detail || 'Неизвестная ошибка'), 'error')
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
-    } catch (e) {
-        console.error('Ошибка удаления рецепта:', e)
-        showToast('Ошибка удаления рецепта', 'error')
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }

@@ -12,15 +12,18 @@ async function register() {
             password: password
         })
         if (response.ok) {
-            alert('Регистрация прошла успешно! Пожалуйста, войдите в систему.')
-            window.location.href = '/login.html'
+            showToast('Регистрация прошла успешно! Пожалуйста, войдите в систему.', 'success')
+            setTimeout(() => {
+                window.location.href = 'recipes.html'
+            }, 800)
         } else {
-            const error = await response.json()
-            alert('Ошибка: ' + (error.detail || 'Неизвестная ошибка'))
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
     } catch (error) {
-        console.error('Ошибка при регистрации:', error)
-        alert('Ошибка при регистрации: ' + error.message)
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }
 
@@ -37,14 +40,18 @@ async function login() {
             const data = await response.json()
             localStorage.setItem('access_token', data.access_token)
             localStorage.setItem('refresh_token', data.refresh_token)
-            alert('Вход выполнен!')
-            window.location.href = '/recipes.html'
+            showToast('Вход выполнен!', 'success')
+            setTimeout(() => {
+                window.location.href = 'recipes.html'
+            }, 800)
         } else {
             const errorData = await response.json()
-            alert('Ошибка: ' + (errorData.detail || 'Неизвестная ошибка'))
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
     } catch (error) {
-        alert('Ошибка при входе: ' + error.message)
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }
 

@@ -8,12 +8,13 @@ async function loadProfile() {
             document.getElementById('profile-email').textContent = user.email
             document.getElementById('profile-created').textContent = new Date(user.created_at).toLocaleDateString('ru-RU')
         } else {
-            const error = await response.json()
-            showToast('Ошибка: ' + (error.detail || 'Неизвестная ошибка'), 'error')
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
-    } catch (e) {
-        console.error('Ошибка загрузки профиля:', e)
-        showToast('Ошибка загрузки профиля', 'error')
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }
 
@@ -27,12 +28,13 @@ async function updateName(newName) {
             showToast('Имя обновлено!', 'success')
             loadProfile()
         } else {
-            const error = await response.json()
-            showToast('Ошибка: ' + (error.detail || 'Неизвестная ошибка'), 'error')
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
-    } catch (e) {
-        console.error('Ошибка обновления имени:', e)
-        showToast('Ошибка обновления имени', 'error')
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }
 // ===== ОБНОВЛЕНИЕ EMAIL =====
@@ -45,12 +47,13 @@ async function updateEmail(newEmail) {
             showToast('Email обновлён!', 'success')
             loadProfile()
         } else {
-            const error = await response.json()
-            showToast('Ошибка: ' + (error.detail || 'Неизвестная ошибка'), 'error')
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
-    } catch (e) {
-        console.error('Ошибка обновления email:', e)
-        showToast('Ошибка обновления email', 'error')
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }
 
@@ -67,11 +70,12 @@ async function changePassword(oldPassword, newPassword) {
             document.getElementById('newPassword').value = ''
             document.getElementById('confirmPassword').value = ''
         } else {
-            const error = await response.json()
-            showToast('Ошибка: ' + (error.detail || 'Неизвестная ошибка'), 'error')
+            const errorData = await response.json()
+            const errorMessage = getErrorMessage(errorData)
+            showToast('Ошибка: ' + errorMessage, 'error')
         }
-    } catch (e) {
-        console.error('Ошибка смены пароля:', e)
-        showToast('Ошибка смены пароля', 'error')
+    } catch (error) {
+        const errorMessage = error.message || JSON.stringify(error)
+        showToast('Ошибка: ' + errorMessage, 'error')
     }
 }

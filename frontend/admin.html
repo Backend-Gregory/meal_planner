@@ -13,6 +13,7 @@
     <script src="js/navbar.js" defer></script>
 </head>
 <body class="bg-gradient-custom">
+    <div id="toastContainer" class="toast-container"></div>
 
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-nav-custom">
@@ -35,19 +36,19 @@
     </header>
 
     <main>
-        <div class="container py-5">
+        <div class="container py-5 slide-up">
             <h1 class="text-white text-shadow mb-4">🛡️ Админ-панель</h1>
 
-            <div class="glass-card text-white p-4 mb-4">
+            <div class="glass-card text-white p-4 mb-4 fade-in">
                 <h3 class="mb-3">👥 Пользователи</h3>
-                <div id="admin-users">
+                <div class="admin-table-wrapper" id="admin-users">
                     <p class="text-muted">Загрузка...</p>
                 </div>
             </div>
 
-            <div class="glass-card text-white p-4">
+            <div class="glass-card text-white p-4 fade-in">
                 <h3 class="mb-3">📖 Все рецепты</h3>
-                <div id="admin-recipes">
+                <div class="admin-table-wrapper" id="admin-recipes">
                     <p class="text-muted">Загрузка...</p>
                 </div>
             </div>
