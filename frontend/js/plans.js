@@ -43,19 +43,18 @@ function renderPlans(plans) {
 
     if (!plans || plans.length === 0) {
         container.innerHTML = `
-            <div class="text-center text-white py-5">
-                <h3>📋 Нет плана на эту неделю</h3>
-                <p class="text-light">Создайте план, чтобы начать</p>
-                <a href="create-plan.html" class="btn btn-accent mt-3">+ Создать план</a>
+            <div class="empty-state">
+                <span class="empty-icon"><i class="fas fa-calendar-plus"></i></span>
+                <h5>Нет планов на эту неделю</h5>
+                <p>Создайте план питания на неделю, чтобы начать планировать свои блюда.</p>
+                <a href="create-plan.html" class="btn btn-accent"><i class="fas fa-plus"></i> Создать план</a>
             </div>
         `
         return
     }
 
-    // Группируем по дням недели
     const days = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье']
     const grouped = {}
-
     plans.forEach(plan => {
         const dayName = days[plan.day_of_week] || `День ${plan.day_of_week + 1}`
         if (!grouped[dayName]) grouped[dayName] = { plans: [] }
@@ -72,11 +71,10 @@ function renderPlans(plans) {
 
         html += `
             <div class="col-md-6 col-lg-4 mb-4 fade-in">
-                <div class="card glass-card text-white card-hover">
-                    <div class="card-body">
-                        <h4 class="card-title text-center">${dayName}</h4>
-                        <hr>
-                `
+                <div class="plan-card">
+                    <h4 class="card-title text-center">${dayName}</h4>
+                    <hr>
+        `
 
         for (const meal of ['breakfast', 'lunch', 'dinner']) {
             const plan = data.plans.find(p => p.meal_type === meal)
@@ -84,15 +82,15 @@ function renderPlans(plans) {
                 html += `
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span>${mealTypes[meal]}</span>
-                        <span class="badge bg-info">${getRecipeTitle(plan.recipe_id)}</span>
-                        <button onclick="deletePlan(${plan.id})" class="btn btn-danger btn-sm btn-hover">🗑️</button>
+                        <span class="badge">${getRecipeTitle(plan.recipe_id)}</span>
+                        <button onclick="deletePlan(${plan.id})" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
                     </div>
                 `
             } else {
                 html += `
-                    <div class="d-flex justify-content-between align-items-center mb-2 text-light opacity-50">
+                    <div class="d-flex justify-content-between align-items-center mb-2 text-muted">
                         <span>${mealTypes[meal]}</span>
-                        <span class="text-muted">Не выбран</span>
+                        <span>Не выбран</span>
                     </div>
                 `
             }
@@ -100,11 +98,10 @@ function renderPlans(plans) {
 
         html += `
                     <div class="mt-3 text-center">
-                        <button class="btn btn-sm btn-accent btn-hover" onclick="openEditPlan('${dayName}', '${data.plans[0].week_start}')">✏️ Изменить</button>
+                        <button class="btn btn-sm btn-accent" onclick="openEditPlan('${dayName}', '${data.plans[0].week_start}')"><i class="fas fa-edit"></i> Изменить</button>
                     </div>
                 </div>
             </div>
-        </div>
         `
     }
     html += `</div>`
@@ -201,11 +198,12 @@ function openEditPlan(dayName, weekStart) {
     editPlanWeek = weekStart
 
     const container = document.getElementById('plans-container')
-    const dayCards = container.querySelectorAll('.card')
+    const dayCards = container.querySelectorAll('.plan-card')
     let targetCard = null
 
     dayCards.forEach(card => {
-        if (card.querySelector('.card-title')?.textContent === dayName) {
+        const title = card.querySelector('.card-title')
+        if (title && title.textContent === dayName) {
             targetCard = card
         }
     })
@@ -239,11 +237,11 @@ function showEditForm(dayName, mealData) {
         { key: 'dinner', label: '🍽 Ужин' }
     ]
 
-    let html = `<h5>${dayName}</h5><hr>`
+    let html = `<h5 class="mb-3">${dayName}</h5><hr>`
     mealTypes.forEach(meal => {
         const selected = mealData[meal.key] || ''
         html += `
-            <div class="mb-3 slide-up">
+            <div class="mb-3">
                 <label class="form-label">${meal.label}</label>
                 <select class="form-select" id="edit_${meal.key}">
                     <option value="">— Не выбрано —</option>
@@ -256,7 +254,7 @@ function showEditForm(dayName, mealData) {
     })
 
     html += `
-        <button class="btn btn-accent w-100" onclick="saveEditPlan()">💾 Сохранить</button>
+        <button class="btn btn-accent w-100" onclick="saveEditPlan()"><i class="fas fa-save"></i> Сохранить</button>
     `
 
     body.innerHTML = html
@@ -266,15 +264,25 @@ function showEditForm(dayName, mealData) {
 }
 
 async function saveEditPlan() {
-    const breakfast = document.getElementById('edit_breakfast').value
-    const lunch = document.getElementById('edit_lunch').value
-    const dinner = document.getElementById('edit_dinner').value
+    const breakfast = document.getElementById('edit_breakfast')?.value
+    const lunch = document.getElementById('edit_lunch')?.value
+    const dinner = document.getElementById('edit_dinner')?.value
 
     const dayName = editPlanDay
     const weekStart = editPlanWeek
 
+    if (!dayName || !weekStart) {
+        showToast('Ошибка: данные о дне не найдены', 'error')
+        return
+    }
+
     const days = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье']
     const dayOfWeek = days.indexOf(dayName)
+
+    if (dayOfWeek === -1) {
+        showToast('Ошибка: день не найден', 'error')
+        return
+    }
 
     const daysData = [{
         day_of_week: dayOfWeek,
@@ -292,8 +300,10 @@ async function saveEditPlan() {
         if (response.ok) {
             showToast('План обновлён! 🎉', 'success')
             const modal = bootstrap.Modal.getInstance(document.getElementById('editPlanModal'))
-            modal.hide()
+            if (modal) modal.hide()
             loadCurrentPlan()
+            editPlanDay = null
+            editPlanWeek = null
         } else {
             const errorData = await response.json()
             const errorMessage = getErrorMessage(errorData)

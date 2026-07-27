@@ -1,3 +1,15 @@
+// ===== КАТЕГОРИИ (РУС) =====
+function getCategoryName(category) {
+    const map = {
+        'breakfast': '🍳 Завтрак',
+        'lunch': '🥗 Обед',
+        'dinner': '🍽 Ужин',
+        'dessert': '🍰 Десерт',
+        'snack': '🍿 Перекус'
+    }
+    return map[category] || category
+}
+
 // ===== ЗАГРУЗКА СПИСКА =====
 async function loadRecipes(search = '', category = '', skip = 0, limit = 10) {
     try {
@@ -27,28 +39,38 @@ function renderRecipes(recipes) {
     const container = document.getElementById('recipes-container')
     if (!container) return
 
-    if (!recipes.length) {
-        container.innerHTML = '<p class="text-white text-center">Нет рецептов. Создайте первый!</p>'
+    if (!recipes || recipes.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <span class="empty-icon"><i class="fas fa-utensils"></i></span>
+                <h5>Нет рецептов</h5>
+                <p>Создайте свой первый рецепт и начните планировать питание!</p>
+                <a href="create-recipe.html" class="btn btn-accent"><i class="fas fa-plus"></i> Создать рецепт</a>
+            </div>
+        `
         return
     }
 
     container.innerHTML = recipes.map(recipe => `
         <div class="col-md-4 mb-4 fade-in">
-            <div class="card h-100 card-hover">
-                <div class="card-body">
-                    <h5 class="card-title">${recipe.title}</h5>
-                        <p class="card-text">${recipe.description || ''}</p>
-                        <p><small>Категория: ${recipe.category}</small></p>
-                        <p><small>⏱ ${recipe.cooking_time} мин</small></p>
-                        <p><small>👤 ${recipe.user_name || 'Неизвестен'}</small></p>
-                        <a href="recipe-detail.html?id=${recipe.id}" class="btn btn-info btn-sm btn-hover">📖 Подробнее</a>
-                        <a href="edit-recipe.html?id=${recipe.id}" class="btn btn-primary btn-sm btn-hover">✏️ Редактировать</a>
-                        <button onclick="deleteRecipe(${recipe.id})" class="btn btn-danger btn-sm btn-hover">🗑️ Удалить</button>
+            <div class="recipe-card">
+                <h5 class="card-title">${recipe.title}</h5>
+                <p class="card-text">${recipe.description || ''}</p>
+                <div class="d-flex flex-wrap gap-1 mb-2">
+                    <span class="badge">${getCategoryName(recipe.category)}</span>
+                    <span class="badge">⏱ ${recipe.cooking_time} мин</span>
+                </div>
+                <p class="card-text"><small>👤 ${recipe.user_name || 'Неизвестен'}</small></p>
+                <div class="d-flex gap-2 flex-wrap">
+                    <a href="recipe-detail.html?id=${recipe.id}" class="btn btn-sm btn-outline-light"><i class="fas fa-eye"></i></a>
+                    <a href="edit-recipe.html?id=${recipe.id}" class="btn btn-sm btn-accent"><i class="fas fa-edit"></i></a>
+                    <button onclick="deleteRecipe(${recipe.id})" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
                 </div>
             </div>
         </div>
     `).join('')
 }
+
 
 // ===== СОЗДАНИЕ =====
 async function createRecipe() {
@@ -131,28 +153,92 @@ async function loadRecipeDetail(id) {
 
     const recipe = await getRecipe(id)
     if (!recipe) {
-        container.innerHTML = `<div class="text-white text-center"><h1>Рецепт не найден</h1><a href="recipes.html" class="btn btn-accent">Назад</a></div>`
+        container.innerHTML = `
+            <div class="glass-card text-white p-4 text-center">
+                <div class="empty-state">
+                    <span class="empty-icon"><i class="fas fa-utensils"></i></span>
+                    <h5>Рецепт не найден</h5>
+                    <p>Возможно, он был удалён или у вас нет доступа.</p>
+                    <a href="recipes.html" class="btn btn-accent"><i class="fas fa-arrow-left"></i> Назад к рецептам</a>
+                </div>
+            </div>
+        `
         return
     }
 
+    // Категории с иконками
+    const categoryMap = {
+        'breakfast': '🍳 Завтрак',
+        'lunch': '🥗 Обед',
+        'dinner': '🍽 Ужин',
+        'dessert': '🍰 Десерт',
+        'snack': '🍿 Перекус'
+    }
+    const categoryDisplay = categoryMap[recipe.category] || recipe.category
+
     container.innerHTML = `
-        <div class="text-white">
-            <h1>${recipe.title}</h1>
-            <p>${recipe.description || ''}</p>
-            <p><strong>Категория:</strong> ${recipe.category}</p>
-            <p><strong>Время:</strong> ${recipe.cooking_time} мин</p>
-            <p><strong>Автор:</strong> ${recipe.user_name || 'Неизвестен'}</p>
-            <h3>📝 Ингредиенты</h3>
-            <ul>${recipe.ingredients.map(i => `<li>${i}</li>`).join('')}</ul>
-            <h3>📖 Инструкция</h3>
-            <p>${recipe.instructions}</p>
-            <a href="edit-recipe.html?id=${recipe.id}" class="btn btn-primary">✏️ Редактировать</a>
-            <button onclick="deleteRecipe(${recipe.id})" class="btn btn-danger">🗑️ Удалить</button>
-            <a href="recipes.html" class="btn btn-outline-light">← Назад</a>
+        <div class="glass-card text-white p-4 fade-in">
+            <!-- Шапка -->
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                <h1 class="display-6 fw-bold mb-0">${recipe.title}</h1>
+                <span class="badge" style="background:rgba(233,69,96,0.15);color:#e94560;font-size:1rem;padding:6px 18px;">${categoryDisplay}</span>
+            </div>
+
+            <!-- Инфо -->
+            <div class="d-flex flex-wrap gap-3 mb-4 text-muted">
+                <span><i class="fas fa-user" style="color:#e94560;"></i> ${recipe.user_name || 'Неизвестен'}</span>
+                <span><i class="fas fa-clock" style="color:#e94560;"></i> ${recipe.cooking_time} мин</span>
+                <span><i class="fas fa-utensils" style="color:#e94560;"></i> ${recipe.ingredients?.length || 0} ингредиентов</span>
+            </div>
+
+            ${recipe.description ? `
+                <div class="mb-4">
+                    <p class="text-secondary" style="font-size:1.05rem;">${recipe.description}</p>
+                </div>
+            ` : ''}
+
+            <hr>
+
+            <!-- Ингредиенты -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5 class="fw-bold mb-3"><i class="fas fa-list" style="color:#e94560;"></i> Ингредиенты</h5>
+                    <ul class="list-unstyled">
+                        ${recipe.ingredients?.map(i => `
+                            <li class="py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">
+                                <i class="fas fa-circle" style="color:#e94560;font-size:8px;margin-right:10px;"></i>
+                                ${i}
+                            </li>
+                        `).join('') || '<li class="text-muted">Нет ингредиентов</li>'}
+                    </ul>
+                </div>
+
+                <!-- Инструкция -->
+                <div class="col-md-6">
+                    <h5 class="fw-bold mb-3"><i class="fas fa-book" style="color:#e94560;"></i> Инструкция</h5>
+                    <div class="text-secondary" style="line-height:1.7;">
+                        ${recipe.instructions ? recipe.instructions.replace(/\n/g, '<br>') : 'Нет инструкции'}
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Кнопки -->
+            <div class="d-flex flex-wrap gap-2 mt-3">
+                <a href="edit-recipe.html?id=${recipe.id}" class="btn btn-accent">
+                    <i class="fas fa-edit"></i> Редактировать
+                </a>
+                <button onclick="deleteRecipe(${recipe.id})" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Удалить
+                </button>
+                <a href="recipes.html" class="btn btn-outline-light">
+                    <i class="fas fa-arrow-left"></i> Назад
+                </a>
+            </div>
         </div>
     `
 }
-
 // ===== РЕДАКТИРОВАНИЕ =====
 let currentRecipeId = null
 

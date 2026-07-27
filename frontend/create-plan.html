@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Создать план — Meal Planner</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="js/api.js" defer></script>
     <script src="js/auth.js" defer></script>
@@ -17,19 +18,19 @@
     <div id="toastContainer" class="toast-container"></div>
 
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-nav-custom">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-nav-custom fixed-top">
             <div class="container">
-                <a class="navbar-brand" href="index.html">🍽️ Meal Planner</a>
+                <a class="navbar-brand" href="index.html"><i class="fas fa-utensils"></i> Meal Planner</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link" href="recipes.html">Рецепты</a></li>
-                        <li class="nav-item"><a class="nav-link" href="plans.html">Планы</a></li>
-                        <li class="nav-item"><a class="nav-link" href="shopping.html">Список покупок</a></li>
-                        <li class="nav-item" id="admin-link"><a class="nav-link" href="admin.html">Админ</a></li>
-                        <li class="nav-item"><a class="nav-link" href="profile.html">Профиль</a></li>
+                        <li class="nav-item"><a class="nav-link" href="recipes.html"><i class="fas fa-book-open"></i> Рецепты</a></li>
+                        <li class="nav-item"><a class="nav-link" href="plans.html"><i class="fas fa-calendar-alt"></i> Планы</a></li>
+                        <li class="nav-item"><a class="nav-link" href="shopping.html"><i class="fas fa-shopping-cart"></i> Список</a></li>
+                        <li class="nav-item" id="admin-link"><a class="nav-link" href="admin.html"><i class="fas fa-shield-alt"></i> Админ</a></li>
+                        <li class="nav-item"><a class="nav-link" href="profile.html"><i class="fas fa-user"></i> Профиль</a></li>
                     </ul>
                 </div>
             </div>
@@ -37,24 +38,17 @@
     </header>
 
     <main>
-        <div class="container py-5 slide-up">
-            <div class="glass-card text-white mx-auto" style="max-width: 800px;">
-                <h2 class="text-center mb-4 fw-bold">📅 Создать план на неделю</h2>
-
+        <div class="container py-4 slide-up">
+            <div class="glass-card text-white mx-auto" style="max-width: 750px;">
+                <h2 class="text-center mb-4 fw-bold"><i class="fas fa-calendar-plus" style="color:#e94560;"></i> Создать план на неделю</h2>
                 <form id="createPlanForm">
-                    <!-- Дата начала недели -->
                     <div class="mb-4">
                         <label for="weekStart" class="form-label">Дата начала недели (понедельник)</label>
-                        <input type="date" class="form-control" id="weekStart" required>
+                        <input type="date" class="form-control" id="weekStart" required style="max-width:250px;">
                     </div>
-
-                    <!-- Дни недели -->
-                    <div id="daysContainer">
-                        <!-- JS заполнит -->
-                    </div>
-
-                    <button type="submit" class="btn btn-accent w-100 mt-3">💾 Сохранить план</button>
-                    <a href="plans.html" class="btn btn-outline-light w-100 mt-2">Отмена</a>
+                    <div id="daysContainer"></div>
+                    <button type="submit" class="btn btn-accent w-100 mt-3"><i class="fas fa-save"></i> Сохранить план</button>
+                    <a href="plans.html" class="btn btn-outline-light w-100 mt-2"><i class="fas fa-times"></i> Отмена</a>
                 </form>
             </div>
         </div>

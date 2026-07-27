@@ -4,14 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meal Planner</title>
-    
-    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    
-    <!-- Свой CSS -->
     <link rel="stylesheet" href="css/style.css">
     <script src="js/index.js" defer></script>
     <script src="js/auth.js" defer></script>
@@ -20,24 +15,25 @@
 </head>
 <body class="bg-gradient-custom">
     <div id="toastContainer" class="toast-container"></div>
+
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-nav-custom fixed-top animate__animated animate__fadeInDown">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-nav-custom fixed-top">
             <div class="container">
-                <a class="navbar-brand fw-bold" href="index.html">🍽️ Meal Planner</a>
+                <a class="navbar-brand" href="index.html"><i class="fas fa-utensils"></i> Meal Planner</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto" id="auth-buttons">
-                        <li class="nav-item"><a class="nav-link" href="login.html">Войти</a></li>
-                        <li class="nav-item"><a class="nav-link" href="register.html">Регистрация</a></li>
+                        <li class="nav-item"><a class="nav-link" href="login.html"><i class="fas fa-sign-in-alt"></i> Войти</a></li>
+                        <li class="nav-item"><a class="nav-link" href="register.html"><i class="fas fa-user-plus"></i> Регистрация</a></li>
                     </ul>
-                    <ul class="navbar-nav ms-auto" id="user-buttons" style="display: none;">
-                        <li class="nav-item"><a class="nav-link" href="recipes.html">Рецепты</a></li>
-                        <li class="nav-item"><a class="nav-link" href="plans.html">Планы</a></li>
-                        <li class="nav-item"><a class="nav-link" href="shopping.html">Список покупок</a></li>
-                        <li class="nav-item" id="admin-link"><a class="nav-link" href="admin.html">Админ</a></li>
-                        <li class="nav-item"><a class="nav-link" href="profile.html">Профиль</a></li>
+                    <ul class="navbar-nav ms-auto" id="user-buttons" style="display:none;">
+                        <li class="nav-item"><a class="nav-link" href="recipes.html"><i class="fas fa-book-open"></i> Рецепты</a></li>
+                        <li class="nav-item"><a class="nav-link" href="plans.html"><i class="fas fa-calendar-alt"></i> Планы</a></li>
+                        <li class="nav-item"><a class="nav-link" href="shopping.html"><i class="fas fa-shopping-cart"></i> Список</a></li>
+                        <li class="nav-item" id="admin-link"><a class="nav-link" href="admin.html"><i class="fas fa-shield-alt"></i> Админ</a></li>
+                        <li class="nav-item"><a class="nav-link" href="profile.html"><i class="fas fa-user"></i> Профиль</a></li>
                     </ul>
                 </div>
             </div>
@@ -48,27 +44,19 @@
         <div class="d-flex align-items-center justify-content-center vh-100">
             <div class="text-center text-white text-shadow px-3">
                 <h1 class="display-3 fw-bold animate__animated animate__fadeInDown">
-                    Добро пожаловать в Meal Planner!
+                    <i class="fas fa-utensils" style="color: #e94560;"></i> Добро пожаловать в Meal Planner!
                 </h1>
-                <p class="lead mt-3 animate__animated animate__fadeIn delay-1s">
-                    Планируйте питание на неделю, создавайте рецепты и список покупок.
-                </p>
-                <p class="text-light opacity-75 animate__animated animate__fadeIn delay-2s">
-                    Удобный сервис для планирования меню на неделю с автоматическим списком покупок.
-                </p>
+                <p class="lead mt-3 animate__animated animate__fadeIn delay-1s">Планируйте питание на неделю, создавайте рецепты и список покупок.</p>
+                <p class="text-white-50 animate__animated animate__fadeIn delay-2s">Удобный сервис для планирования меню на неделю с автоматическим списком покупок.</p>
                 <div class="mt-4 d-flex flex-wrap justify-content-center gap-3 animate__animated animate__zoomIn delay-3s">
-                    <a href="register.html" id="start-btn" class="btn btn-accent btn-lg px-4">🚀 Начать</a>
-                    <a href="login.html" id="login-btn" class="btn btn-outline-light-custom btn-lg px-4">Войти</a>
+                    <a href="register.html" id="start-btn" class="btn btn-accent btn-lg px-5"><i class="fas fa-rocket"></i> Начать</a>
+                    <a href="login.html" id="login-btn" class="btn btn-outline-light btn-lg px-5"><i class="fas fa-sign-in-alt"></i> Войти</a>
                 </div>
             </div>
         </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            updateNavbar();
-        });
-    </script>
+    <script>document.addEventListener('DOMContentLoaded', updateNavbar);</script>
 </body>
 </html>

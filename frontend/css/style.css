@@ -1,315 +1,572 @@
-/* ===== ГЛОБАЛЬНЫЕ СТИЛИ ===== */
+/* --- БАЗА --- */
+:root {
+    --bg: #0f0f1a;
+    --bg-card: rgba(20, 20, 40, 0.88);
+    --bg-input: rgba(255, 255, 255, 0.06);
+    --accent: #e94560;
+    --accent-hover: #c73652;
+    --text: #ffffff;
+    --text-muted: #b0b0c0;
+    --border: rgba(255, 255, 255, 0.08);
+}
 
-/* Градиент для всех страниц */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    padding-top: 70px;
+}
+
 .bg-gradient-custom {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--bg);
     min-height: 100vh;
 }
 
-/* Стеклянная шапка */
-.bg-nav-custom {
-    background: rgba(0, 0, 0, 0.3) !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-}
-
-/* Тень для текста */
 .text-shadow {
-    text-shadow: 0 2px 15px rgba(0, 0, 0, 0.4);
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
 }
 
-/* Акцентная кнопка (жёлтая) */
-.btn-accent {
-    background: #ffd93d;
-    color: #2d3436;
-    border: none;
+/* --- ШАПКА --- */
+.bg-nav-custom {
+    background: rgba(15, 15, 26, 0.92) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 0;
+}
+
+.navbar-brand {
     font-weight: 700;
-    transition: 0.3s;
+    font-size: 1.2rem;
+    color: #fff !important;
 }
-.btn-accent:hover {
-    background: #f6c445;
-    transform: scale(1.03);
-}
-
-/* Кнопка с белой обводкой */
-.btn-outline-light-custom {
-    border: 2px solid rgba(255, 255, 255, 0.7);
-    color: white;
-    font-weight: 600;
-    transition: 0.3s;
-}
-.btn-outline-light-custom:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: white;
+.navbar-brand i {
+    color: var(--accent);
+    margin-right: 8px;
 }
 
-/* ===== СТЕКЛЯННЫЕ КАРТОЧКИ ДЛЯ ФОРМ ===== */
-.glass-card {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 16px;
-    padding: 40px;
-    max-width: 420px;
-    width: 100%;
-}
-
-.glass-card .form-control {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    padding: 12px 16px;
-}
-
-.glass-card .form-control::placeholder {
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.glass-card .form-control:focus {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: #ffd93d;
-    box-shadow: 0 0 0 3px rgba(255, 217, 61, 0.2);
-    color: white;
-}
-
-.glass-card .form-label {
-    color: rgba(255, 255, 255, 0.8);
+.navbar .nav-link {
+    color: rgba(255, 255, 255, 0.6) !important;
     font-weight: 500;
+    padding: 8px 16px !important;
+    border-radius: 8px;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+.navbar .nav-link i {
+    margin-right: 8px;
+}
+.navbar .nav-link:hover {
+    color: #fff !important;
+    background: rgba(255, 255, 255, 0.05);
+}
+.navbar .nav-link.active {
+    color: var(--accent) !important;
+    background: rgba(233, 69, 96, 0.10);
 }
 
-.glass-card a {
-    color: #ffd93d;
-    text-decoration: none;
-}
-.glass-card a:hover {
-    text-decoration: underline;
-}
-
-/* ===== КАСТОМНЫЕ ЗАДЕРЖКИ ДЛЯ ANIMATE.CSS ===== */
-.delay-1s { animation-delay: 0.4s !important; }
-.delay-2s { animation-delay: 0.8s !important; }
-.delay-3s { animation-delay: 1.2s !important; }
-.delay-4s { animation-delay: 1.6s !important; }
-
-/* ===== АДАПТИВНЫЕ ДОПОЛНЕНИЯ ===== */
-@media (max-width: 768px) {
-    .glass-card {
-        padding: 24px;
-        margin: 0 16px;
+@media (max-width: 991px) {
+    .navbar-collapse {
+        background: rgba(15, 15, 26, 0.95);
+        border-radius: 12px;
+        padding: 12px;
+        margin-top: 10px;
+        border: 1px solid var(--border);
     }
 }
 
-.recipe-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+/* --- КНОПКИ --- */
+.btn {
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 10px 24px;
+    transition: all 0.2s ease;
+    border: none;
+    font-size: 0.9rem;
 }
-.recipe-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+.btn:active {
+    transform: scale(0.96);
 }
 
-/* ===== ТОСТЫ (уведомления) ===== */
+.btn-accent {
+    background: var(--accent);
+    color: #fff;
+}
+.btn-accent:hover {
+    background: var(--accent-hover);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(233, 69, 96, 0.3);
+}
+
+.btn-outline-light {
+    background: transparent;
+    color: #fff;
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+}
+.btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
+}
+
+.btn-success {
+    background: #22c55e;
+    color: #fff;
+}
+.btn-success:hover {
+    background: #16a34a;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: #fff;
+}
+.btn-danger:hover {
+    background: #dc2626;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.btn-sm {
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    border-radius: 8px;
+}
+.btn-lg {
+    padding: 14px 36px;
+    font-size: 1.05rem;
+    border-radius: 12px;
+}
+
+/* --- КАРТОЧКИ --- */
+.glass-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 30px;
+    transition: all 0.3s ease;
+    color: var(--text);
+}
+.glass-card:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* --- ТЕКСТ В КАРТОЧКАХ --- */
+.glass-card * {
+    color: var(--text);
+}
+.glass-card .text-muted,
+.glass-card small,
+.glass-card .text-secondary {
+    color: var(--text-muted) !important;
+}
+.glass-card h1, .glass-card h2, .glass-card h3,
+.glass-card h4, .glass-card h5, .glass-card .h1,
+.glass-card .h2, .glass-card .h3, .glass-card .h4,
+.glass-card .h5 {
+    color: #fff;
+    font-weight: 600;
+}
+.glass-card a:not(.btn) {
+    color: #ff6b8a;
+    text-decoration: none;
+}
+.glass-card a:not(.btn):hover {
+    color: #ff8aa3;
+    text-decoration: underline;
+}
+.glass-card hr {
+    border-color: var(--border);
+}
+
+/* --- ФОРМЫ --- */
+.glass-card .form-label {
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+}
+.glass-card .form-control,
+.glass-card .form-select {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+.glass-card .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+}
+.glass-card .form-control:focus,
+.glass-card .form-select:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.15);
+    background: rgba(255, 255, 255, 0.08);
+}
+.glass-card .form-select option {
+    background: #1a1a2e;
+    color: #fff;
+}
+
+/* --- ПОЛЯ ВНЕ КАРТОЧЕК (поиск, фильтры) --- */
+#searchInput,
+#categoryFilter,
+input.form-control,
+select.form-select {
+    background: var(--bg-input) !important;
+    border: 1px solid var(--border) !important;
+    color: #fff !important;
+    padding: 10px 14px;
+    border-radius: 10px;
+}
+#searchInput::placeholder,
+input.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+#searchInput:focus,
+#categoryFilter:focus,
+input.form-control:focus,
+select.form-select:focus {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.15) !important;
+    outline: none;
+}
+#categoryFilter option,
+select.form-select option {
+    background: #1a1a2e !important;
+    color: #fff !important;
+}
+
+/* --- КАРТОЧКИ РЕЦЕПТОВ/ПЛАНОВ --- */
+.recipe-card,
+.plan-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    transition: all 0.3s ease;
+    height: 100%;
+    color: var(--text);
+}
+.recipe-card:hover,
+.plan-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+.recipe-card .card-title,
+.plan-card .card-title {
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+.recipe-card .card-text,
+.plan-card .card-text {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+.recipe-card .badge,
+.plan-card .badge {
+    background: rgba(233, 69, 96, 0.15);
+    color: var(--accent);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 0.75rem;
+}
+
+/* --- ТАБЛИЦЫ (АДМИНКА) --- */
+.admin-table-wrapper {
+    overflow-x: auto;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 2px;
+}
+.admin-table-wrapper table {
+    width: 100%;
+    min-width: 600px;
+    border-collapse: collapse;
+    color: var(--text);
+}
+.admin-table-wrapper th {
+    background: rgba(0, 0, 0, 0.4);
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 2px solid rgba(233, 69, 96, 0.15);
+}
+.admin-table-wrapper td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+}
+.admin-table-wrapper tr:hover td {
+    background: rgba(255, 255, 255, 0.03);
+}
+.admin-table-wrapper tr:last-child td {
+    border-bottom: none;
+}
+
+/* --- ПУСТЫЕ СОСТОЯНИЯ --- */
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--text-muted);
+}
+.empty-state .empty-icon {
+    font-size: 56px;
+    display: block;
+    margin-bottom: 12px;
+    opacity: 0.4;
+}
+.empty-state h5 {
+    color: #fff;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+.empty-state p {
+    color: var(--text-muted);
+    max-width: 400px;
+    margin: 0 auto 16px;
+}
+
+/* --- ДЕТАЛЬНАЯ СТРАНИЦА РЕЦЕПТА --- */
+#recipe-detail .glass-card {
+    max-width: 900px;
+    margin: 0 auto;
+}
+#recipe-detail .glass-card ul {
+    padding-left: 0;
+}
+#recipe-detail .glass-card hr {
+    border-color: rgba(255, 255, 255, 0.06);
+}
+#recipe-detail .display-6 {
+    font-size: 1.8rem;
+    word-break: break-word;
+}
+#recipe-detail .badge {
+    background: rgba(233, 69, 96, 0.15) !important;
+    color: var(--accent) !important;
+    font-size: 1rem !important;
+    padding: 6px 18px !important;
+}
+#recipe-detail .text-secondary {
+    color: var(--text-muted) !important;
+}
+#recipe-detail ul li {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    padding: 6px 0;
+}
+#recipe-detail ul li:last-child {
+    border-bottom: none;
+}
+
+@media (max-width: 768px) {
+    #recipe-detail .display-6 {
+        font-size: 1.4rem;
+    }
+    #recipe-detail .glass-card {
+        padding: 18px !important;
+    }
+    #recipe-detail .row > div {
+        margin-bottom: 20px;
+    }
+}
+
+/* --- ТОСТЫ --- */
 .toast-container {
     position: fixed;
-    top: 20px;
+    top: 80px;
     right: 20px;
     z-index: 9999;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    max-width: 380px;
+    gap: 10px;
+    max-width: 400px;
     pointer-events: none;
 }
-
 .toast-message {
-    padding: 16px 24px;
+    padding: 14px 20px;
     border-radius: 12px;
-    color: white;
+    color: #fff;
     font-weight: 500;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-    animation: slideInRight 0.4s ease forwards;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+    animation: slideInRight 0.3s ease forwards;
     pointer-events: auto;
-    backdrop-filter: blur(10px);
+    background: rgba(20, 20, 40, 0.92);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
     display: flex;
     align-items: center;
     gap: 12px;
 }
-
-.toast-message.success {
-    background: rgba(40, 167, 69, 0.95);
-}
-.toast-message.error {
-    background: rgba(220, 53, 69, 0.95);
-}
-.toast-message.info {
-    background: rgba(23, 162, 184, 0.95);
-}
-.toast-message.warning {
-    background: rgba(255, 193, 7, 0.95);
-    color: #333;
-}
-
+.toast-message.success { border-left: 4px solid #22c55e; }
+.toast-message.error { border-left: 4px solid #ef4444; }
+.toast-message.warning { border-left: 4px solid #f59e0b; }
+.toast-message.info { border-left: 4px solid #3b82f6; }
 .toast-message.hide {
     animation: slideOutRight 0.3s ease forwards;
 }
-
 @keyframes slideInRight {
-    from {
-        transform: translateX(120%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
+    from { transform: translateX(120%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
 }
-
 @keyframes slideOutRight {
-    from {
-        transform: translateX(0);
-        opacity: 1;
-    }
-    to {
-        transform: translateX(120%);
-        opacity: 0;
-    }
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(120%); opacity: 0; }
 }
-
 .toast-message .toast-icon {
-    font-size: 24px;
+    font-size: 20px;
+    flex-shrink: 0;
 }
 
-/* ===== HOVER-ЭФФЕКТЫ ===== */
-.card-hover {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* --- МОДАЛКИ --- */
+.modal-content {
+    background: rgba(20, 20, 40, 0.95) !important;
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    color: var(--text);
 }
-.card-hover:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+.modal-header {
+    border-bottom: 1px solid var(--border);
+}
+.modal-footer {
+    border-top: 1px solid var(--border);
+}
+.modal-header .btn-close {
+    filter: invert(1);
+}
+.modal-body * {
+    color: var(--text);
+}
+.modal-body .form-label {
+    color: var(--text-muted);
+}
+.modal-body .form-control,
+.modal-body .form-select {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: #fff;
+}
+.modal-body .form-control:focus,
+.modal-body .form-select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.15);
 }
 
-.btn-hover {
-    transition: all 0.2s ease;
-}
-.btn-hover:hover {
-    transform: scale(1.05);
-}
-.btn-hover:active {
-    transform: scale(0.95);
-}
-
-/* ===== АНИМАЦИИ ===== */
+/* --- АНИМАЦИИ --- */
 .fade-in {
-    animation: fadeIn 0.5s ease forwards;
+    animation: fadeIn 0.4s ease forwards;
 }
-
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
 }
-
 .slide-up {
     animation: slideUp 0.4s ease forwards;
 }
-
 @keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(40px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
 }
+.delay-1s { animation-delay: 0.1s !important; }
+.delay-2s { animation-delay: 0.2s !important; }
+.delay-3s { animation-delay: 0.3s !important; }
 
-/* ===== ЛОАДЕР (спиннер) ===== */
+/* --- СПИННЕР --- */
 .spinner {
     display: inline-block;
     width: 40px;
     height: 40px;
-    border: 4px solid rgba(255, 255, 255, 0.1);
-    border-left-color: #ffd93d;
+    border: 3px solid rgba(255,255,255,0.05);
+    border-top-color: var(--accent);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
 }
-
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+    to { transform: rotate(360deg); }
 }
-
 .spinner-container {
     display: flex;
     justify-content: center;
-    align-items: center;
     padding: 40px 0;
 }
+.spinner-sm {
+    width: 18px;
+    height: 18px;
+    border-width: 2px;
+    display: inline-block;
+    border: 2px solid rgba(255,255,255,0.05);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+}
 
-/* ===== АДАПТИВ ДЛЯ МОБИЛЬНЫХ ===== */
+/* --- КНОПКА "СОЗДАТЬ" В ПЛАНАХ --- */
+#createPlanBtn {
+    background: var(--accent) !important;
+    border-color: var(--accent) !important;
+    color: #fff !important;
+}
+#createPlanBtn:hover {
+    background: var(--accent-hover) !important;
+    border-color: var(--accent-hover) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(233, 69, 96, 0.3);
+}
+
+/* --- АДАПТИВ --- */
 @media (max-width: 768px) {
-    .glass-card {
-        padding: 16px !important;
-        margin: 0 10px;
-    }
-    .navbar-nav {
-        gap: 6px;
-    }
-    .display-3 {
-        font-size: 2.2rem;
-    }
-    .display-4 {
-        font-size: 1.8rem;
-    }
-    .container {
-        padding-left: 12px;
-        padding-right: 12px;
-    }
-    .d-flex.gap-3 {
-        gap: 8px !important;
-    }
-    .btn {
-        font-size: 14px;
-        padding: 8px 16px;
-    }
-    table {
-        font-size: 12px;
-    }
-    table .btn-sm {
-        font-size: 10px;
-        padding: 2px 8px;
-    }
+    body { padding-top: 60px; }
+    .glass-card { padding: 18px !important; border-radius: 14px; }
+    .container { padding-left: 12px; padding-right: 12px; }
+    h1.display-3 { font-size: 1.8rem; }
+    .btn { font-size: 0.85rem; padding: 8px 16px; }
+    .btn-lg { font-size: 0.95rem; padding: 10px 20px; }
+    .admin-table-wrapper table { min-width: 460px; font-size: 0.8rem; }
+    .admin-table-wrapper th,
+    .admin-table-wrapper td { padding: 8px 12px; }
+    .toast-container { top: 70px; right: 12px; left: 12px; max-width: 100%; }
+    .toast-message { padding: 12px 16px; font-size: 0.85rem; }
+    .empty-state { padding: 30px 16px; }
+    .empty-state .empty-icon { font-size: 40px; }
 }
 
 @media (max-width: 576px) {
-    .display-3 {
-        font-size: 1.8rem;
-    }
-    .glass-card {
-        padding: 12px !important;
-        margin: 0 6px;
-    }
+    .glass-card { padding: 14px !important; border-radius: 12px; }
+    h1.display-3 { font-size: 1.4rem; }
+    .recipe-card,
+    .plan-card { padding: 14px; border-radius: 12px; }
 }
 
-.admin-table-wrapper {
-    overflow-x: auto;
-    width: 100%;
-    border-radius: 12px;
+.recipe-card .card-title {
+    margin-bottom: 8px; /* добавляем отступ снизу */
 }
 
-.admin-table-wrapper table {
-    min-width: 500px;
-    margin-bottom: 0;
-}
-
-.admin-table-wrapper .table-dark {
-    background: rgba(0, 0, 0, 0.3) !important;
-    border-radius: 12px;
+.recipe-card .card-text {
+    margin-top: 4px;    /* небольшой отступ сверху */
+    margin-bottom: 12px;
 }

@@ -29,7 +29,7 @@ async def create_recipe(
 @router.get('/', response_model=list[RecipeResponse])
 async def get_recipes(
     skip: int = 0,
-    limit: int = 10,
+    limit: int = 12,
     category: str | None = None,
     search: str | None = None,
     session: AsyncSession = Depends(get_session)
@@ -41,6 +41,7 @@ async def get_recipes(
     if search:
         query = query.where(Recipe.title.ilike(f"%{search}%"))
 
+    query = query.order_by(Recipe.id.desc())
     query = query.offset(skip).limit(limit)
 
     res = await session.execute(query)

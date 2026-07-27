@@ -45,7 +45,7 @@ class Plan(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     week_start: Mapped[date] = mapped_column(Date, nullable=False)
     day_of_week: Mapped[int] = mapped_column(Integer, nullable=False)
-    recipe_id: Mapped[int] = mapped_column(ForeignKey("recipes.id"), nullable=False)
+    recipe_id: Mapped[int] = mapped_column(ForeignKey("recipes.id", ondelete="CASCADE"), nullable=False)
     meal_type: Mapped[str] = mapped_column(String(20), nullable=False)
     user: Mapped["User"] = relationship(back_populates="plans")
     recipe: Mapped["Recipe"] = relationship(back_populates="plans")

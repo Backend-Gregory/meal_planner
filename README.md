@@ -9,7 +9,7 @@
 ## 📸 Скриншоты
 
 ### Главная страница
-![Главная страница](screenshots/home.png)
+![Главная страница](screenshots/index.png)
 
 ### Рецепты
 ![Рецепты](screenshots/recipes.png)
