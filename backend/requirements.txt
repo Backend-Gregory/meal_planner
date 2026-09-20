@@ -8,3 +8,7 @@ passlib
 python-jose[cryptography]
 email-validator
 bcrypt==4.1.2
+pytest
+pytest-asyncio
+httpx
+aiosqlite
