@@ -66,3 +66,18 @@ async def test_login_blocked_user(client: AsyncClient, test_session, test_user):
     await test_session.commit()
     response = await client.post("/auth/login", json=user_data_login)
     assert response.status_code == 403
+
+async def test_refresh_with_valid_token(client: AsyncClient, test_user):
+    response_login = await client.post("/auth/login", json=user_data_login)
+    refresh_token = response_login.json()["refresh_token"]
+
+    response_refresh = await client.post("/auth/refresh", json={"refresh_token": refresh_token})
+
+    assert response_refresh.status_code == 200
+    data = response_refresh.json()
+    assert isinstance(data["access_token"], str)
+    assert isinstance(data["refresh_token"], str)
+
+async def test_refresh_with_invalid_token(client: AsyncClient):
+    response = await client.post("/auth/refresh", json={"refresh_token": "invalid token"})
+    assert response.status_code == 401
