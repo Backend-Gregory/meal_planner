@@ -94,3 +94,52 @@ async def test_me_unauthorized_not_token(client: AsyncClient):
 async def test_me_unauthorized_invalid_token(client: AsyncClient):
     response = await client.get("/auth/me", headers={"Authorization": "Bearer 123"})
     assert response.status_code == 401
+
+async def test_change_password_success(client: AsyncClient, auth_headers):
+    password_data = {
+        "old_password": "password123",
+        "new_password": "pass12345"
+    }
+
+    response = await client.put("/auth/change-password", headers=auth_headers, json=password_data)
+    assert response.status_code == 200
+
+async def test_change_password_invalid_password(client: AsyncClient, auth_headers):
+    password_invalid_data = {
+        "old_password": "password12",
+        "new_password": "pass12345"
+    }
+    response = await client.put("/auth/change-password", headers=auth_headers, json=password_invalid_data)
+    assert response.status_code == 401
+
+async def test_change_password_not_token(client: AsyncClient):
+    password_data = {
+        "old_password": "password123",
+        "new_password": "pass12345"
+    }
+    response = await client.put("/auth/change-password", json=password_data)
+    assert response.status_code == 401
+
+async def test_change_password_success_login(client: AsyncClient, auth_headers):
+    password_data = {
+        "old_password": "password123",
+        "new_password": "pass12345"
+    }
+    await client.put("/auth/change-password", json=password_data, headers=auth_headers)
+    response = await client.post("/auth/login", json={
+        "email": "test@example.com",
+        "password": "pass12345"
+    })
+    assert response.status_code == 200
+
+    response_old = await client.post("/auth/login", json={
+        "email": "test@example.com",
+        "password": "password123"
+    })
+    assert response_old.status_code == 401
+    
+    response_new = await client.post("/auth/login", json={
+        "email": "test@example.com",
+        "password": "pass12345"
+    })
+    assert response_new.status_code == 200
