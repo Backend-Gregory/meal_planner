@@ -87,3 +87,36 @@ async def test_get_recipes_pagination(client: AsyncClient, test_user, test_sessi
 
     assert response3.status_code == 200
     assert response3.json() == []
+
+@pytest.mark.parametrize("category, expected_count", [
+    ("breakfast", 2),
+    ("lunch", 1),
+    ("nonexistent", 0)
+])
+async def test_filter_by_category(client: AsyncClient, category, test_session: AsyncSession, test_user, expected_count, create_recipe):
+    await create_recipe(category="breakfast")
+    await create_recipe(category="breakfast")
+    await create_recipe(category="lunch")
+
+    response = await client.get(f"/recipes/?category={category}")
+    assert response.status_code == 200
+    assert len(response.json()) == expected_count
+
+@pytest.mark.parametrize("search, expected_count", [
+    ("test", 2),
+    ("TEST", 2),
+    ("nonexistent", 0)
+])
+async def test_search_by_title(client: AsyncClient, test_session: AsyncSession, test_user, create_recipe, search, expected_count):
+    await create_recipe(title="test1")
+    await create_recipe(title="Test2")
+    await create_recipe(title="other")
+    await test_session.commit()
+    response = await client.get(f"/recipes/?search={search}")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == expected_count
+
+    if expected_count > 0:
+        for recipe in data:
+            assert search.lower() in recipe["title"].lower()
