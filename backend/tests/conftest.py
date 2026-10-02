@@ -1,7 +1,9 @@
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.pool import StaticPool
+from app.models import User, Recipe
+from app.auth import hash_password
 
 from app.main import app
 from app.database import Base, get_session
@@ -36,3 +38,46 @@ async def client(test_session):
         yield ac
 
     app.dependency_overrides.clear()
+
+@pytest_asyncio.fixture
+async def test_user(test_session: AsyncSession):
+    email = "test@example.com"
+    hashed_password = hash_password("password123")
+    name = "test user"
+
+    user = User(
+        email=email,
+        hashed_password=hashed_password,
+        name=name
+    )
+
+    test_session.add(user)
+    await test_session.commit()
+    await test_session.refresh(user)
+
+    return user
+
+@pytest_asyncio.fixture
+async def test_recipe(test_session: AsyncSession, test_user):
+    title = "test recipe"
+    description = "test description"
+    ingredients = ["test1", "test2", "test3"]
+    instructions = "test instructions"
+    category = "breakfast"
+    cooking_time = 30
+
+    recipe = Recipe(
+        user_id=test_user.id,
+        title=title,
+        description=description,
+        ingredients=ingredients,
+        instructions=instructions,
+        category=category,
+        cooking_time=cooking_time
+    )
+
+    test_session.add(recipe)
+    await test_session.commit()
+    await test_session.refresh(recipe)
+    
+    return recipe
