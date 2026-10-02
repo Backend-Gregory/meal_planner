@@ -81,3 +81,16 @@ async def test_refresh_with_valid_token(client: AsyncClient, test_user):
 async def test_refresh_with_invalid_token(client: AsyncClient):
     response = await client.post("/auth/refresh", json={"refresh_token": "invalid token"})
     assert response.status_code == 401
+
+async def test_me_authorized(client: AsyncClient, auth_headers):
+    response = await client.get("/auth/me", headers=auth_headers)
+    assert response.status_code == 200
+    assert response.json()["email"] == "test@example.com"
+
+async def test_me_unauthorized_not_token(client: AsyncClient):
+    response = await client.get("/auth/me")
+    assert response.status_code == 401
+
+async def test_me_unauthorized_invalid_token(client: AsyncClient):
+    response = await client.get("/auth/me", headers={"Authorization": "Bearer 123"})
+    assert response.status_code == 401
