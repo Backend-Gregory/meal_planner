@@ -55,3 +55,35 @@ async def test_create_recipe_no_token(client: AsyncClient):
 async def test_create_recipe_invalid_data(client: AsyncClient, auth_headers, payload):
     response = await client.post("/recipes/", headers=auth_headers, json=payload)
     assert response.status_code == 422
+
+async def test_get_recipes_empty(client: AsyncClient):
+    response = await client.get("/recipes/")
+    assert response.status_code == 200
+    assert response.json() == []
+
+async def test_get_recipes_with_data(client: AsyncClient, test_recipe):
+    response = await client.get("/recipes/")
+    assert response.status_code == 200
+    assert len(response.json()) == 1
+
+async def test_get_recipes_pagination(client: AsyncClient, test_user, test_session: AsyncSession, create_recipe):
+    recipe_ids = []
+    for i in range(5):
+        recipe = await create_recipe()
+        recipe_ids.append(recipe.id)
+    await test_session.commit()
+
+    response1 = await client.get("/recipes/?limit=2")
+    response2 = await client.get("/recipes/?skip=2&limit=2")
+    response3 = await client.get("/recipes/?skip=10")
+
+    assert response1.status_code == 200
+    ids1 = [r["id"] for r in response1.json()]
+    assert ids1 == [recipe_ids[4], recipe_ids[3]]
+
+    assert response2.status_code == 200
+    ids2 = [r["id"] for r in response2.json()]
+    assert ids2 == [recipe_ids[2], recipe_ids[1]]
+
+    assert response3.status_code == 200
+    assert response3.json() == []
