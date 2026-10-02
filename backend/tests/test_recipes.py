@@ -120,3 +120,13 @@ async def test_search_by_title(client: AsyncClient, test_session: AsyncSession, 
     if expected_count > 0:
         for recipe in data:
             assert search.lower() in recipe["title"].lower()
+
+async def test_get_recipe_success(client: AsyncClient, test_recipe):
+    response = await client.get(f"/recipes/{test_recipe.id}")
+    assert response.status_code == 200
+    data = response.json()
+    assert_recipe_fields(data, test_recipe)
+
+async def test_get_recipe_not_found(client: AsyncClient, test_recipe):
+    response = await client.get(f"/recipes/{2}")
+    assert response.status_code == 404
