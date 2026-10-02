@@ -81,3 +81,34 @@ async def test_recipe(test_session: AsyncSession, test_user):
     await test_session.refresh(recipe)
     
     return recipe
+
+@pytest_asyncio.fixture
+async def auth_headers(client: AsyncClient, test_user):
+    login_data = {
+        "email": "test@example.com",
+        "password": "password123"
+    }
+
+    response = await client.post("/auth/login", json=login_data)
+    token = response.json()["access_token"]
+
+    return {"Authorization": f"Bearer {token}"}
+
+@pytest_asyncio.fixture
+async def create_recipe(test_session: AsyncSession, test_user):
+    async def _create(**overrides):
+        default = {
+            "user_id": test_user.id,
+            "title": "New Recipe",
+            "description": "Description",
+            "ingredients": ["a", "b"],
+            "instructions": "Instructions",
+            "category": "lunch",
+            "cooking_time": 15,
+        }
+        default.update(overrides)
+        recipe = Recipe(**default)
+        test_session.add(recipe)
+        await test_session.flush()
+        return recipe
+    return _create
