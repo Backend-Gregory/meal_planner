@@ -1,0 +1,9 @@
+def assert_recipe_fields(data: dict, recipe):
+    assert data["id"] == recipe.id
+    assert data["title"] == recipe.title
+    assert data["description"] == recipe.description
+    assert data["ingredients"] == recipe.ingredients
+    assert data["instructions"] == recipe.instructions
+    assert data["category"] == recipe.category
+    assert data["cooking_time"] == recipe.cooking_time
+    assert data["user_id"] == recipe.user_id
