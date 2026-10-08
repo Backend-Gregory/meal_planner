@@ -110,3 +110,30 @@ async def test_copy_plan_empty(client: AsyncClient, auth_headers):
 async def test_copy_plan_no_token(client: AsyncClient):
     response = await client.post("/plans/copy")
     assert response.status_code == 401
+
+async def test_update_plan_success(client: AsyncClient, auth_headers, test_plan, create_recipe, test_session: AsyncSession):
+    new_recipe = await create_recipe(title="Another recipe")
+    await test_session.commit()
+    week_start = test_plan.week_start
+    response = await client.put(f"/plans/{week_start}", headers=auth_headers, json=make_plan_data(breakfast_recipe_id=new_recipe.id))
+    assert response.status_code == 200
+
+async def test_update_plan_add_meal(client: AsyncClient, auth_headers, test_plan, create_recipe, test_session: AsyncSession):
+    new_recipe = await create_recipe(title="Another recipe", category="lunch")
+    await test_session.commit()
+    week_start = test_plan.week_start
+    response = await client.put(f"/plans/{week_start}", headers=auth_headers, json=make_plan_data(lunch_recipe_id=new_recipe.id))
+    assert response.status_code == 200
+
+async def test_update_plan_not_found(client: AsyncClient, auth_headers):
+    response = await client.put("/plans/2030-01-09", headers=auth_headers, json=make_plan_data(week_start="2030-01-09"))
+    assert response.status_code == 404
+
+async def test_update_plan_invalid_recipe(client: AsyncClient, auth_headers, test_plan):
+    week_start = test_plan.week_start
+    response = await client.put(f"/plans/{week_start}", headers=auth_headers, json=make_plan_data(breakfast_recipe_id=9999))
+    assert response.status_code == 404
+
+async def test_update_plan_no_token(client: AsyncClient):
+    response = await client.put("/plans/2025-01-01")
+    assert response.status_code == 401
