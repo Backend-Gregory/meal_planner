@@ -137,3 +137,21 @@ async def test_update_plan_invalid_recipe(client: AsyncClient, auth_headers, tes
 async def test_update_plan_no_token(client: AsyncClient):
     response = await client.put("/plans/2025-01-01")
     assert response.status_code == 401
+
+async def test_delete_plan_success(client: AsyncClient, auth_headers, test_plan, test_session: AsyncSession):
+    response = await client.delete(f"/plans/{test_plan.id}", headers=auth_headers)
+    assert response.status_code == 204
+    plan = await test_session.get(Plan, test_plan.id)
+    assert not plan
+
+async def test_delete_plan_foreign(client: AsyncClient, auth_second_headers, test_plan):
+    response = await client.delete(f"/plans/{test_plan.id}", headers=auth_second_headers)
+    assert response.status_code == 403
+
+async def test_delete_plan_not_found(client: AsyncClient, auth_headers):
+    response = await client.delete("/plans/9999", headers=auth_headers)
+    assert response.status_code == 404
+
+async def test_delete_plan_no_token(client: AsyncClient):
+    response = await client.delete("/plans/1")
+    assert response.status_code == 401
