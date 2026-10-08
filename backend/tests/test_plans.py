@@ -87,3 +87,26 @@ async def test_get_plan_by_week_alignment(client: AsyncClient, auth_headers, tes
 
     assert len(data) == 1
     assert data[0]["week_start"] == week_start.isoformat()
+
+async def test_copy_plan_success(client: AsyncClient, auth_headers, test_plan):
+    week_start = test_plan.week_start
+    response = await client.post("/plans/copy", headers=auth_headers)
+    assert response.status_code == 200
+    assert len(response.json()) == 1
+    data = response.json()[0]
+
+    
+    copied_week_start = date.fromisoformat(data["week_start"]) - timedelta(days=7)
+    assert copied_week_start == week_start
+    assert data["recipe_id"] == test_plan.recipe_id
+    assert data["meal_type"] == test_plan.meal_type
+    assert data["day_of_week"] == test_plan.day_of_week
+    assert data["user_id"] == test_plan.user_id
+
+async def test_copy_plan_empty(client: AsyncClient, auth_headers):
+    response = await client.post("/plans/copy", headers=auth_headers)
+    assert response.status_code == 404
+
+async def test_copy_plan_no_token(client: AsyncClient):
+    response = await client.post("/plans/copy")
+    assert response.status_code == 401
