@@ -85,6 +85,25 @@ async def auth_headers(client: AsyncClient, test_user):
     return await create_auth_headers(client, login_data)
 
 @pytest_asyncio.fixture
+async def test_second_user(test_session: AsyncSession, ):
+    email = "test2@example.com"
+    hashed_password = hash_password("password123")
+    name = "test user"
+
+    user = await create_user(test_session, email, hashed_password, name)
+
+    return user
+
+@pytest_asyncio.fixture
+async def auth_second_headers(client: AsyncClient, test_second_user):
+    login_data = {
+        "email": "test2@example.com",
+        "password": "password123"
+    }
+
+    return await create_auth_headers(client, login_data)
+
+@pytest_asyncio.fixture
 async def create_recipe(test_session: AsyncSession, test_user):
     async def _create(**overrides):
         default = {
