@@ -37,3 +37,29 @@ async def create_auth_headers(client: AsyncClient, login_data: dict):
     token = response.json()["access_token"]
     
     return {"Authorization": f"Bearer {token}"}
+
+def make_plan_data(
+    breakfast_recipe_id=None,
+    lunch_recipe_id=None,
+    dinner_recipe_id=None,
+    day_of_week=0,
+    week_start="2025-01-06",
+):
+    days = []
+    for i in range(7):
+        if i == day_of_week:
+            days.append({
+                "day_of_week": i,
+                "breakfast_recipe_id": breakfast_recipe_id,
+                "lunch_recipe_id": lunch_recipe_id,
+                "dinner_recipe_id": dinner_recipe_id,
+            })
+        else:
+            days.append({
+                "day_of_week": i,
+                "breakfast_recipe_id": None,
+                "lunch_recipe_id": None,
+                "dinner_recipe_id": None,
+            })
+
+    return {"week_start": week_start, "days": days}
