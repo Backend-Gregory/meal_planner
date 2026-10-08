@@ -2,11 +2,12 @@ import pytest_asyncio
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.pool import StaticPool
-from app.models import User, Recipe
+from app.models import User, Recipe, Plan
 from app.auth import hash_password
-
+from helpers import create_user, create_auth_headers
 from app.main import app
 from app.database import Base, get_session
+from datetime import date, datetime, timedelta
 
 @pytest_asyncio.fixture
 async def test_engine():
@@ -45,15 +46,7 @@ async def test_user(test_session: AsyncSession):
     hashed_password = hash_password("password123")
     name = "test user"
 
-    user = User(
-        email=email,
-        hashed_password=hashed_password,
-        name=name
-    )
-
-    test_session.add(user)
-    await test_session.commit()
-    await test_session.refresh(user)
+    user = await create_user(test_session, email, hashed_password, name)
 
     return user
 
@@ -89,10 +82,7 @@ async def auth_headers(client: AsyncClient, test_user):
         "password": "password123"
     }
 
-    response = await client.post("/auth/login", json=login_data)
-    token = response.json()["access_token"]
-
-    return {"Authorization": f"Bearer {token}"}
+    return await create_auth_headers(client, login_data)
 
 @pytest_asyncio.fixture
 async def create_recipe(test_session: AsyncSession, test_user):
