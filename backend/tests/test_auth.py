@@ -1,4 +1,4 @@
-from app.auth import hash_password, verify_password, create_access_token, decode_token
+from app.auth import hash_password, verify_password, create_access_token, decode_token, create_refresh_token
 
 def test_hash_password_not_equal_original():
     password = "abc12345"
@@ -23,8 +23,16 @@ def test_create_access_token_returns_string():
     assert token
     assert isinstance(token, str)
 
-def test_decode_valid_token():
+def test_create_refresh_token_returns_string():
+    token = create_refresh_token(1)
+    assert token
+    assert isinstance(token, str)
+
+def test_decode_access_token():
     assert decode_token(create_access_token(5)) == 5
+
+def test_decode_refresh_token():
+    assert decode_token(create_refresh_token(1)) == 1
 
 def test_decode_invalid_token():
     assert decode_token("мусор") is None
