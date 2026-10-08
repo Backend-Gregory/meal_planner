@@ -64,3 +64,26 @@ async def test_get_current_plan_empty(client: AsyncClient, auth_headers):
 async def test_get_current_plan_no_token(client: AsyncClient):
     response = await client.get("/plans/current")
     assert response.status_code == 401
+
+async def test_get_plan_by_week_success(client: AsyncClient, auth_headers, test_plan):
+    week_start = test_plan.week_start
+    response = await client.get(f"/plans/{week_start}", headers=auth_headers)
+    assert response.status_code == 200
+    data = response.json()
+
+    assert len(data) == 1
+    assert_plan_fields(data[0], test_plan)
+
+async def test_get_plan_by_week_empty(client: AsyncClient, auth_headers):
+    response = await client.get("/plans/2030-01-06", headers=auth_headers)
+    assert response.status_code == 200
+    assert response.json() == []
+
+async def test_get_plan_by_week_alignment(client: AsyncClient, auth_headers, test_plan):
+    week_start = test_plan.week_start
+    response = await client.get(f"/plans/{week_start + timedelta(days=2)}", headers=auth_headers)
+    assert response.status_code == 200
+    data = response.json()
+
+    assert len(data) == 1
+    assert data[0]["week_start"] == week_start.isoformat()
