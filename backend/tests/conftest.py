@@ -121,3 +121,28 @@ async def create_recipe(test_session: AsyncSession, test_user):
         await test_session.flush()
         return recipe
     return _create
+
+@pytest_asyncio.fixture
+async def create_plan(test_user, test_session: AsyncSession, test_recipe):
+    async def _create(**overrides):
+        today = date.today()
+        defaults = {
+            "user_id": test_user.id,
+            "week_start": today - timedelta(days=today.weekday()),
+            "day_of_week": 0,
+            "recipe_id": test_recipe.id,
+            "meal_type": "breakfast"
+        }
+        defaults.update(overrides)
+        plan = Plan(**defaults)
+        test_session.add(plan)
+        await test_session.flush()
+        return plan
+    return _create
+
+@pytest_asyncio.fixture
+async def test_plan(create_plan, test_session: AsyncSession):
+    plan = await create_plan()
+    await test_session.commit()
+    await test_session.refresh(plan)
+    return plan
