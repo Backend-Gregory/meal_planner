@@ -130,3 +130,41 @@ async def test_get_recipe_success(client: AsyncClient, test_recipe):
 async def test_get_recipe_not_found(client: AsyncClient, test_recipe):
     response = await client.get(f"/recipes/{2}")
     assert response.status_code == 404
+
+async def test_update_recipe_success(client: AsyncClient, test_recipe, auth_headers):
+    response = await client.put(f"/recipes/{test_recipe.id}", headers=auth_headers, json=recipe_data)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["id"] == test_recipe.id
+    assert data["user_id"] == test_recipe.user_id
+    assert data["title"] == recipe_data["title"]
+    assert data["description"] == recipe_data["description"]
+    assert data["ingredients"] == recipe_data["ingredients"]
+    assert data["instructions"] == recipe_data["instructions"]
+    assert data["category"] == recipe_data["category"]
+    assert data["cooking_time"] == recipe_data["cooking_time"]
+
+async def test_update_recipe_foreign(client: AsyncClient, test_recipe, auth_second_headers):
+    response = await client.put(f"/recipes/{test_recipe.id}", headers=auth_second_headers, json=recipe_data)
+    assert response.status_code == 403
+
+async def test_update_recipe_not_found(client: AsyncClient, auth_headers):
+    response = await client.put("/recipes/1", headers=auth_headers, json=recipe_data)
+    assert response.status_code == 404
+
+async def test_update_recipe_no_token(client: AsyncClient, test_recipe):
+    response = await client.put(f"/recipes/{test_recipe.id}", json=recipe_data)
+    assert response.status_code == 401
+
+async def test_update_recipe_partial(client: AsyncClient, test_recipe, auth_headers):
+    new_title = "New Recipe"
+    update_recipe_data = {
+        "title": new_title
+    }
+
+    response = await client.put(f"/recipes/{test_recipe.id}", json=update_recipe_data, headers=auth_headers)
+    assert response.status_code == 200
+    data = response.json()
+
+    test_recipe.title = new_title
+    assert_recipe_fields(data, test_recipe)
