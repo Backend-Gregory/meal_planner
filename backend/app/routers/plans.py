@@ -68,7 +68,7 @@ async def create_plan(
         session.add_all(shopping_items)
         await session.commit()
         
-        return [PlanResponse.model_validate(plan) for plan in new_plans]
+    return [PlanResponse.model_validate(plan) for plan in new_plans]
 
 @router.get('/current', response_model=list[PlanResponse])
 async def get_current_plan(
