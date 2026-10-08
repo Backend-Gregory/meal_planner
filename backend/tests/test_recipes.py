@@ -168,3 +168,22 @@ async def test_update_recipe_partial(client: AsyncClient, test_recipe, auth_head
 
     test_recipe.title = new_title
     assert_recipe_fields(data, test_recipe)
+
+async def test_delete_recipe_success(client: AsyncClient, test_recipe, auth_headers):
+    delete_response = await client.delete(f"recipes/{test_recipe.id}", headers=auth_headers)
+    assert delete_response.status_code == 204
+
+    get_response = await client.get(f"recipes/{test_recipe.id}")
+    assert get_response.status_code == 404
+
+async def test_delete_recipe_foreign(client: AsyncClient, test_recipe, auth_second_headers):
+    response = await client.delete(f"recipes/{test_recipe.id}", headers=auth_second_headers)
+    assert response.status_code == 403
+
+async def test_delete_recipe_not_found(client: AsyncClient, auth_headers):
+    response = await client.delete("recipes/1", headers=auth_headers)
+    assert response.status_code == 404
+
+async def test_delete_recipe_no_token(client: AsyncClient, test_recipe):
+    response = await client.delete(f"recipes/{test_recipe.id}")
+    assert response.status_code == 401
