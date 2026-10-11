@@ -2,12 +2,12 @@ import pytest_asyncio
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.pool import StaticPool
-from app.models import User, Recipe, Plan
+from app.models import Recipe, Plan, ShoppingList
 from app.auth import hash_password
 from helpers import create_user, create_auth_headers
 from app.main import app
 from app.database import Base, get_session
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 
 @pytest_asyncio.fixture
 async def test_engine():
@@ -146,3 +146,29 @@ async def test_plan(create_plan, test_session: AsyncSession):
     await test_session.commit()
     await test_session.refresh(plan)
     return plan
+
+@pytest_asyncio.fixture
+async def create_shopping_item(test_session: AsyncSession, test_user):
+    async def _create(**overrides):
+        today = date.today()
+        week_start = today - timedelta(days=today.weekday())
+        defaults = {
+            "user_id": test_user.id,
+            "week_start": week_start,
+            "ingredient": "milk",
+            "quantity": "1 шт",
+            "purchased": False
+        }
+        defaults.update(overrides)
+        shopping_item = ShoppingList(**defaults)
+        test_session.add(shopping_item)
+        await test_session.flush()
+        return shopping_item
+    return _create
+
+@pytest_asyncio.fixture
+async def test_shopping_item(create_shopping_item, test_session: AsyncSession):
+    shopping_item = await create_shopping_item()
+    await test_session.commit()
+    await test_session.refresh(shopping_item)
+    return shopping_item
