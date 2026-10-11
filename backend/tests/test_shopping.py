@@ -34,3 +34,22 @@ async def test_get_shopping_list_only_current_week(client: AsyncClient, create_s
     data = response.json()
     assert len(data) == 1
     assert data[0]["ingredient"] == "milk"
+
+async def test_update_shopping_item_success(client: AsyncClient, test_shopping_item, auth_headers, test_session: AsyncSession):
+    response = await client.patch(f"/shopping/{test_shopping_item.id}", headers=auth_headers, json={"purchased": True})
+    assert response.status_code == 200
+    data = response.json()
+
+    assert data["purchased"] is True
+
+async def test_update_shopping_item_not_found(client: AsyncClient, auth_headers):
+    response = await client.patch(f"/shopping/9999", headers=auth_headers, json={"purchased": True})
+    assert response.status_code == 404
+
+async def test_update_shopping_item_foreign(client: AsyncClient, auth_second_headers, test_shopping_item, test_session: AsyncSession):
+    response = await client.patch(f"/shopping/{test_shopping_item.id}", headers=auth_second_headers, json={"purchased": True})
+    assert response.status_code == 403
+
+async def test_update_shopping_item_no_token(client: AsyncClient, test_shopping_item, test_session: AsyncSession):
+    response = await client.patch(f"/shopping/{test_shopping_item.id}", json={"purchased": True})
+    assert response.status_code == 401
