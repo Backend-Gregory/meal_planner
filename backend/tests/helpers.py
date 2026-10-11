@@ -20,6 +20,12 @@ def assert_plan_fields(data: dict, plan):
     assert data["recipe_id"] == plan.recipe_id
     assert data["meal_type"] == plan.meal_type
 
+def assert_shopping_item_fields(data: dict, shopping_item):
+    assert data["id"] == shopping_item.id
+    assert data["ingredient"] == shopping_item.ingredient
+    assert data["quantity"] == shopping_item.quantity
+    assert data["purchased"] == shopping_item.purchased
+
 async def create_user(test_session: AsyncSession, email, hashed_password, name):
     user = User(
         email=email,
