@@ -7,7 +7,7 @@ from datetime import timedelta, date
 
 async def test_create_plan_success(client: AsyncClient, test_recipe, auth_headers):
     response = await client.post("/plans/", json=make_plan_data(breakfast_recipe_id=test_recipe.id), headers=auth_headers)
-    assert response.status_code == 200
+    assert response.status_code == 201
     data = response.json()
 
     assert len(data) == 1
@@ -24,7 +24,7 @@ async def test_create_plan_no_token(client: AsyncClient):
 
 async def test_create_plan_empty_recipes(client: AsyncClient, auth_headers):
     response = await client.post("/plans/", json=make_plan_data(), headers=auth_headers)
-    assert response.status_code == 200
+    assert response.status_code == 201
     assert response.json() == []
 
 async def test_create_plan_invalid_recipe(client: AsyncClient, auth_headers):
@@ -43,7 +43,7 @@ async def test_create_plan_wrong_days_count(client: AsyncClient, auth_headers):
 
 async def test_create_plan_generates_shopping_list(client: AsyncClient, auth_headers, test_recipe, test_session: AsyncSession):
     response = await client.post("/plans/", json=make_plan_data(breakfast_recipe_id=test_recipe.id), headers=auth_headers)
-    assert response.status_code == 200
+    assert response.status_code == 201
     res = await test_session.execute(select(ShoppingList).where(ShoppingList.user_id == test_recipe.user_id))
     shopping_items = res.scalars().all()
     assert shopping_items

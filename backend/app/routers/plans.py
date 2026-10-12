@@ -11,7 +11,7 @@ from collections import Counter
 
 router = APIRouter(prefix="/plans", tags=["plans"])
 
-@router.post('/', response_model=list[PlanResponse])
+@router.post('/', response_model=list[PlanResponse], status_code=201)
 async def create_plan(
     plan_data: PlanCreate,
     current_user: User = Depends(get_current_user),

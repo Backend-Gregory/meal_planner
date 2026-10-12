@@ -38,7 +38,7 @@ async def test_full_user_flow(client: AsyncClient):
     today = date.today()
     week_start = (today - timedelta(days=today.weekday())).isoformat()
     response_create_plan = await client.post("/plans/", headers=headers, json=make_plan_data(breakfast_recipe_id=recipe_id, week_start=week_start))
-    assert response_create_plan.status_code == 200
+    assert response_create_plan.status_code == 201
 
     response_get_shopping = await client.get("/shopping/", headers=headers)
     assert response_get_shopping.status_code == 200
