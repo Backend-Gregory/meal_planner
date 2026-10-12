@@ -36,3 +36,23 @@ async def test_block_user_forbidden(client: AsyncClient, test_user, auth_headers
 async def test_block_user_no_token(client: AsyncClient, test_user):
     response = await client.patch(f"/admin/users/{test_user.id}/block")
     assert response.status_code == 401
+
+async def test_unblock_user_success(client: AsyncClient, admin_auth_headers, test_user, test_session: AsyncSession):
+    test_user.is_active = False
+    await test_session.commit()
+    response = await client.patch(f"/admin/users/{test_user.id}/unblock", headers=admin_auth_headers)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["is_active"] == True
+
+async def test_unblock_user_not_found(client: AsyncClient, admin_auth_headers):
+    response = await client.patch("/admin/users/99999/unblock", headers=admin_auth_headers)
+    assert response.status_code == 404
+
+async def test_unblock_user_forbidden(client: AsyncClient, test_user, auth_headers):
+    response = await client.patch(f"/admin/users/{test_user.id}/unblock", headers=auth_headers)
+    assert response.status_code == 403
+
+async def test_unblock_user_no_token(client: AsyncClient, test_user):
+    response = await client.patch(f"/admin/users/{test_user.id}/unblock")
+    assert response.status_code == 401
