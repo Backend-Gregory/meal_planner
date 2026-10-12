@@ -63,7 +63,7 @@ async def get_recipe(recipe_id: int, session: AsyncSession = Depends(get_session
     
     return RecipeResponse.model_validate(recipe)
 
-@router.put('/{recipe_id}', response_model=RecipeResponse)
+@router.patch('/{recipe_id}', response_model=RecipeResponse)
 async def update_recipe(
     recipe_id: int,
     recipe_data: RecipeUpdate,

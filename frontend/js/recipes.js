@@ -275,7 +275,7 @@ async function updateRecipeFromForm() {
 
         const ingredients = ingredientsText.split('\n').filter(i => i.trim())
 
-        const response = await apiRequest(`/recipes/${currentRecipeId}`, 'PUT', {
+        const response = await apiRequest(`/recipes/${currentRecipeId}`, 'PATCH', {
             title, description: description || '', ingredients, instructions, category, cooking_time
         })
 

@@ -145,7 +145,7 @@ async def test_change_password_success_login(client: AsyncClient, auth_headers):
     assert response_new.status_code == 200
 
 async def test_update_success(client: AsyncClient, auth_headers):
-    response = await client.put("/auth/update", headers=auth_headers, json={"name": "test user2"})
+    response = await client.patch("/auth/update", headers=auth_headers, json={"name": "test user2"})
     assert response.status_code == 200
     assert response.json()["name"] == "test user2"
 
@@ -156,9 +156,9 @@ async def test_update_busy_email(client: AsyncClient, auth_headers):
         "password": "password123"
     }
     await client.post("/auth/register", json=second_user)
-    response = await client.put("/auth/update", headers=auth_headers, json={"email": "test2@example.com"})
+    response = await client.patch("/auth/update", headers=auth_headers, json={"email": "test2@example.com"})
     assert response.status_code == 400
 
 async def test_update_not_token(client: AsyncClient):
-    response = await client.put("/auth/update", json={"name": "test user2"})
+    response = await client.patch("/auth/update", json={"name": "test user2"})
     assert response.status_code == 401

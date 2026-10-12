@@ -96,7 +96,7 @@ async def refresh_access_token(
 
     return {"access_token": new_access_token, 'refresh_token': refresh_token}
 
-@router.put('/update', response_model=UserResponse)
+@router.patch('/update', response_model=UserResponse)
 async def update_user(
     user_data: UserUpdate,
     current_user: User = Depends(get_current_user),

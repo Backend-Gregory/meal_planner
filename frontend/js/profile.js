@@ -21,7 +21,7 @@ async function loadProfile() {
 // ===== ОБНОВЛЕНИЕ ИМЕНИ =====
 async function updateName(newName) {
     try {
-        const response = await apiRequest('/auth/update', 'PUT', {
+        const response = await apiRequest('/auth/update', 'PATCH', {
             name: newName
         })
         if (response.ok) {
@@ -40,7 +40,7 @@ async function updateName(newName) {
 // ===== ОБНОВЛЕНИЕ EMAIL =====
 async function updateEmail(newEmail) {
     try {
-        const response = await apiRequest('/auth/update', 'PUT', {
+        const response = await apiRequest('/auth/update', 'PATCH', {
             email: newEmail
         })
         if (response.ok) {
