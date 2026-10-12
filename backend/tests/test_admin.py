@@ -18,3 +18,21 @@ async def test_get_users_forbidden(client: AsyncClient, auth_headers):
 async def test_get_users_no_token(client: AsyncClient):
     response = await client.get("/admin/users")
     assert response.status_code == 401
+
+async def test_block_user_success(client: AsyncClient, admin_auth_headers, test_user):
+    response = await client.patch(f"/admin/users/{test_user.id}/block", headers=admin_auth_headers)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["is_active"] == False
+
+async def test_block_user_not_found(client: AsyncClient, admin_auth_headers):
+    response = await client.patch("/admin/users/9999/block", headers=admin_auth_headers)
+    assert response.status_code == 404
+
+async def test_block_user_forbidden(client: AsyncClient, test_user, auth_headers):
+    response = await client.patch(f"/admin/users/{test_user.id}/block", headers=auth_headers)
+    assert response.status_code == 403
+
+async def test_block_user_no_token(client: AsyncClient, test_user):
+    response = await client.patch(f"/admin/users/{test_user.id}/block")
+    assert response.status_code == 401
