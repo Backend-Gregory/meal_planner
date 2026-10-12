@@ -72,3 +72,22 @@ async def test_get_admin_recipes_forbidden(client: AsyncClient, auth_headers):
 async def test_get_admin_recipes_no_token(client: AsyncClient):
     response = await client.get("/admin/recipes")
     assert response.status_code == 401
+
+async def test_delete_admin_recipe_success(client: AsyncClient, test_recipe, admin_auth_headers, test_session: AsyncSession):
+    recipe_id = test_recipe.id
+    response = await client.delete(f"/admin/recipes/{recipe_id}", headers=admin_auth_headers)
+    assert response.status_code == 204
+    recipe = await test_session.get(Recipe, recipe_id)
+    assert not recipe
+
+async def test_delete_admin_recipe_not_found(client: AsyncClient, admin_auth_headers):
+    response = await client.delete("/admin/recipes/99999", headers=admin_auth_headers)
+    assert response.status_code == 404
+
+async def test_delete_admin_recipe_forbidden(client: AsyncClient, auth_headers, test_recipe):
+    response = await client.delete(f"/admin/recipes/{test_recipe.id}", headers=auth_headers)
+    assert response.status_code == 403
+
+async def test_delete_admin_recipe_no_token(client: AsyncClient, test_recipe):
+    response = await client.delete(f"/admin/recipes/{test_recipe.id}")
+    assert response.status_code == 401
