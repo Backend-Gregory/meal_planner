@@ -56,3 +56,19 @@ async def test_unblock_user_forbidden(client: AsyncClient, test_user, auth_heade
 async def test_unblock_user_no_token(client: AsyncClient, test_user):
     response = await client.patch(f"/admin/users/{test_user.id}/unblock")
     assert response.status_code == 401
+
+async def test_get_admin_recipes_success(client: AsyncClient, test_recipe, admin_auth_headers):
+    response = await client.get("/admin/recipes", headers=admin_auth_headers)
+    assert response.status_code == 200
+    data = response.json()
+
+    assert len(data) == 1
+    assert data[0]["id"] == test_recipe.id
+
+async def test_get_admin_recipes_forbidden(client: AsyncClient, auth_headers):
+    response = await client.get("/admin/recipes", headers=auth_headers)
+    assert response.status_code == 403
+
+async def test_get_admin_recipes_no_token(client: AsyncClient):
+    response = await client.get("/admin/recipes")
+    assert response.status_code == 401
