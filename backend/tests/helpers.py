@@ -26,11 +26,12 @@ def assert_shopping_item_fields(data: dict, shopping_item):
     assert data["quantity"] == shopping_item.quantity
     assert data["purchased"] == shopping_item.purchased
 
-async def create_user(test_session: AsyncSession, email, hashed_password, name):
+async def create_user(test_session: AsyncSession, email, hashed_password, name, is_admin=False):
     user = User(
         email=email,
         hashed_password=hashed_password,
-        name=name
+        name=name,
+        is_admin=is_admin
     )
 
     test_session.add(user)
