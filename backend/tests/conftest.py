@@ -172,3 +172,22 @@ async def test_shopping_item(create_shopping_item, test_session: AsyncSession):
     await test_session.commit()
     await test_session.refresh(shopping_item)
     return shopping_item
+
+@pytest_asyncio.fixture
+async def admin_auth_user(test_session: AsyncSession):
+    email = "admin@example.com"
+    hashed_password = hash_password("password123")
+    name = "admin user"
+
+    user = await create_user(test_session, email, hashed_password, name, is_admin=True)
+
+    return user
+
+@pytest_asyncio.fixture
+async def admin_auth_headers(client: AsyncClient, admin_auth_user):
+    login_data = {
+        "email": "admin@example.com",
+        "password": "password123"
+    }
+
+    return await create_auth_headers(client, login_data)
