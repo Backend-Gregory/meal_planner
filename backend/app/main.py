@@ -3,7 +3,6 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import users, recipes, plans, shopping, admin
-from app.database import engine, Base
 from time import time
 import logging
 
@@ -46,11 +45,6 @@ app.include_router(recipes.router)
 app.include_router(plans.router)
 app.include_router(shopping.router)
 app.include_router(admin.router)
-
-@app.on_event("startup")
-async def startup():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
