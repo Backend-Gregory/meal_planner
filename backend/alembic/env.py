@@ -7,6 +7,7 @@ from sqlalchemy import pool
 from alembic import context
 
 from app.database import Base
+from app.models import User, Recipe, Plan, ShoppingList
 from app.config import settings
 
 # this is the Alembic Config object, which provides
