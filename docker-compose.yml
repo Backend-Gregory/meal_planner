@@ -19,6 +19,8 @@ services:
     container_name: meal_planner_backend
     ports:
       - "8000:8000"
+    volumes:
+      - ./backend/alembic/versions:/app/alembic/versions
     depends_on:
       - db
     environment:
