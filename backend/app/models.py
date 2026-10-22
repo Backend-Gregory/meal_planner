@@ -29,6 +29,7 @@ class Recipe(Base):
     instructions: Mapped[str] = mapped_column(String(500), nullable=False)
     category: Mapped[str] = mapped_column(String(50), nullable=False)
     cooking_time: Mapped[int] = mapped_column(Integer, nullable=False)
+    is_public: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     user: Mapped["User"] = relationship(back_populates="recipes")
     plans: Mapped[list["Plan"]] = relationship(back_populates="recipe")
 
