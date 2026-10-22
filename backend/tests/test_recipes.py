@@ -10,7 +10,8 @@ recipe_data = {
         "ingredients": ["a", "b"],
         "instructions": "Instructions",
         "category": "lunch",
-        "cooking_time": 15
+        "cooking_time": 15,
+        "is_public": False
     }
 
 async def test_create_recipe_success(client: AsyncClient, auth_headers, test_user):
@@ -25,6 +26,7 @@ async def test_create_recipe_success(client: AsyncClient, auth_headers, test_use
     assert data["cooking_time"] == 15
     assert "id" in data
     assert data["user_id"] == test_user.id
+    assert data["is_public"] is False
 
 async def test_create_recipe_no_token(client: AsyncClient):
     response = await client.post("/recipes/", json=recipe_data)
@@ -143,6 +145,7 @@ async def test_update_recipe_success(client: AsyncClient, test_recipe, auth_head
     assert data["instructions"] == recipe_data["instructions"]
     assert data["category"] == recipe_data["category"]
     assert data["cooking_time"] == recipe_data["cooking_time"]
+    assert data["is_public"] == recipe_data["is_public"]
 
 async def test_update_recipe_foreign(client: AsyncClient, test_recipe, auth_second_headers):
     response = await client.patch(f"/recipes/{test_recipe.id}", headers=auth_second_headers, json=recipe_data)

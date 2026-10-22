@@ -11,6 +11,7 @@ def assert_recipe_fields(data: dict, recipe):
     assert data["category"] == recipe.category
     assert data["cooking_time"] == recipe.cooking_time
     assert data["user_id"] == recipe.user_id
+    assert data["is_public"] == recipe.is_public
 
 def assert_plan_fields(data: dict, plan):
     assert data["id"] == plan.id
